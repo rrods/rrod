@@ -1,5 +1,2 @@
-require "rrod/version"
-
-module Rrod
-  # Your code goes here...
-end
+# Your rod and Your staff - they comfort me.
+require "rrod/all"
