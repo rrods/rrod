@@ -1,24 +1,35 @@
 # Rrod
+### Riak ruby object database.
+Rrod lets you use the super awesome database, riak, to model and persist your
+ruby objects.
 
-TODO: Write a gem description
+# Riak
+First, you must make sure you have Riak installed. See:
+http://docs.basho.com/riak/latest/quickstart/#Install-Riak.
+These guys have extremely good docs 
+and will usually answer your questions in IRC #riak.  
 
 ## Installation
+Add `rrod` to your Gemfile and run `bundle` or execute `gem install rrod`.
 
-Add this line to your application's Gemfile:
+# Usage
+Once you have riak and rrod installed, make sure you know the port of one of your
+riak nodes.  Usually `8098`.
 
-    gem 'rrod'
+In terminal, run:
 
-And then execute:
+  $ rrod irb
 
-    $ bundle
+This will set you up with an irb environment with rrod loaded.  Then run the
+following commands.
 
-Or install it yourself as:
-
-    $ gem install rrod
-
-## Usage
-
-TODO: Write usage instructions here
+```ruby
+Car = Class.new(Rrod::Document)
+car = {wheels: 4, color: :black, make: 'Jeep'}
+Car.persist(car)
+@car = Car.first
+@car.color
+```
 
 ## Contributing
 
