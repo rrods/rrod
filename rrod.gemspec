@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Rrod::VERSION
   spec.authors       = ["Adam Hunter"]
   spec.email         = ["adamhunter@me.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ""
+  spec.description   = %[Riak Ruby Object Database]
+  spec.summary       = %[A persistence layer for your ruby objects, powered by Riak]
+  spec.homepage      = "https://github.com/adamhunter/rrod"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
