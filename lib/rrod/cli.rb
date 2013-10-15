@@ -10,7 +10,7 @@ module Rrod
     desc "pry", "start an interactive ruby session with Rrod loaded"
     def pry
       require 'pry'
-      Class.new { pry }
+      TOPLEVEL_BINDING.pry
     end
   end
 end

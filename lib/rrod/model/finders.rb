@@ -14,6 +14,7 @@ module Rrod
           query = attributes_to_search(attributes)
           search = client.search(bucket_name, query)
           docs = search['docs']
+          # TODO ensure docs.first not nil
           new(docs.first)
         end
 

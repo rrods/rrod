@@ -18,6 +18,7 @@ module Rrod
       def persist
         bucket.enable_index! unless bucket.is_indexed?
         robject.raw_data = attributes.to_json
+        robject.key = id unless id.nil?
         robject.store
         self.id = robject.key
         @persisted = true
