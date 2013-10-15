@@ -18,6 +18,9 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
+  spec.add_dependency "riak-client", "~> 1.4.2"
+
+  # cli deps
   spec.add_dependency "thor", "~> 0.18"
   spec.add_dependency "pry",  "~> 0.9"
 

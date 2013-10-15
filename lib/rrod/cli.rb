@@ -1,4 +1,5 @@
 require 'thor'
+require 'rrod'
 
 module Rrod
   class Cli < Thor
@@ -9,7 +10,6 @@ module Rrod
     desc "pry", "start an interactive ruby session with Rrod loaded"
     def pry
       require 'pry'
-      require 'rrod'
       Class.new { pry }
     end
   end
