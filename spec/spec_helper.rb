@@ -1,4 +1,5 @@
 $:.unshift File.expand_path('../../lib', __FILE__)
+require 'pry'
 require 'rrod'
 
 RSpec.configure do |config|
