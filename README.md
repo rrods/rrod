@@ -18,17 +18,17 @@ riak nodes.  Usually `8098`.
 
 In terminal, run:
 
-  $ rrod irb
+  $ rrod pry
 
-This will set you up with an irb environment with rrod loaded.  Then run the
+This will set you up with an pry environment with rrod loaded.  Then run the
 following commands.
 
 ```ruby
-Car = Class.new(Rrod::Document)
-car = {wheels: 4, color: :black, make: 'Jeep'}
-Car.persist(car)
-@car = Car.first
-@car.color
+Car = Class.new { include Rrod::Model }
+car = Car.new(wheels: 4, color: :black, make: 'Jeep')
+car.save
+@car = Car.find_by make: 'Jeep'
+@car.wheels # => 4
 ```
 
 ## Contributing
