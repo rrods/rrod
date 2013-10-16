@@ -7,7 +7,7 @@ module Rrod
     include Finders
 
     def self.client
-      @client ||= Riak::Client.new
+      @client ||= Riak::Client.new(protocol: 'pbc')
     end
 
     module ClassMethods

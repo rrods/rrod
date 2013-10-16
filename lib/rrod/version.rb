@@ -1,3 +1,1 @@
-module Rrod
-  VERSION = "0.0.1"
-end
+Rrod = Module.new { VERSION = "0.0.1" }

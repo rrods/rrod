@@ -2,15 +2,46 @@ module Rrod
   module Model
     module Attributes
 
-      attr_accessor :attributes, :id
-
       def initialize(attributes = {})
+        extend attribute_methods(attributes.stringify_keys)
+        @attributes     = {}
         self.attributes = attributes
-        extend attribute_methods
       end
 
-      def attribute_methods
-        attrs = attributes.dup.tap { |a| a.delete(:id) }
+      def id
+        read_attribute :id
+      end
+
+      def id=(value)
+        write_attribute :id, value
+      end
+
+      def attributes
+        @attributes.keys.inject({}) { |acc, key|
+          acc.tap { |hash| hash[key] = respond_to?(key) ? public_send(key) : nil }
+        }
+      end
+
+      def attributes=(attrs)
+        attrs.each do |key, value|
+          public_send "#{key}=", value
+        end
+      end
+
+      def read_attribute(key)
+        @attributes[key.to_s]
+      end
+      alias :[] :read_attribute
+
+      def write_attribute(key, value)
+        @attributes[key.to_s] = value
+      end
+      alias :[]= :write_attribute
+
+      private
+
+      def attribute_methods(attributes)
+        attrs = attributes.tap { |a| a.delete('id') }
 
         Module.new do
           attrs.keys.each do |key|
@@ -25,15 +56,6 @@ module Rrod
         end 
       end
 
-      def read_attribute(key)
-        attributes[key]
-      end
-      alias :[] :read_attribute
-
-      def write_attribute(key, value)
-        attributes[key] = value
-      end
-      alias :[]= :write_attribute
     end
   end
 end
