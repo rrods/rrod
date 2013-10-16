@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'support/models/car'
 
-describe Rrod::Model::Persistence do
+describe Rrod::Model::Persistence, integration: true do
 
   let(:model) { Car }
   let(:hash)  { {wheels: 4, color: :black, make: 'Jeep'} }

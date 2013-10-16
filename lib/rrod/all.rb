@@ -5,6 +5,8 @@ require 'riak'
 
 require 'rrod/version' # first
 
+require 'rrod/configuration'
+
 require 'rrod/model/attributes'
 require 'rrod/model/finders'
 require 'rrod/model/persistence'
