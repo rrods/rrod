@@ -1,1 +1,2 @@
-Rrod = Module.new { VERSION = "0.0.1" }
+Rrod = Module.new
+Rrod::VERSION = '0.0.1'
