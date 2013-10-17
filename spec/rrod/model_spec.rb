@@ -7,14 +7,10 @@ describe Rrod::Model do
   let(:hash)  { {wheels: 4, color: :black, make: 'Jeep'} }
   let(:instance) { model.new(hash) }
 
-  it 'has a riak client' do
-    expect(described_class.client).to be_a Riak::Client
-  end
-
   describe "including" do
     describe "class methods" do
       it "delegates the client to the Rrod::Model module" do
-        expect(described_class).to receive :client
+        expect(Rrod.configuration).to receive :client
         model.client
       end
 

@@ -6,13 +6,9 @@ module Rrod
     include Persistence
     include Finders
 
-    def self.client
-      Rrod.configuration.client
-    end
-
     module ClassMethods
       def client
-        Rrod::Model.client
+        Rrod.configuration.client
       end
 
       def bucket
@@ -23,7 +19,7 @@ module Rrod
       def bucket_name
         name.tableize
       end
-    end # ClassMethods
+    end
 
     def client
       self.class.client

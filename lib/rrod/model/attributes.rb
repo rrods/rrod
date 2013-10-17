@@ -48,13 +48,11 @@ module Rrod
       end
       alias :[]= :write_attribute
 
-      protected
+      private
 
       def magic_methods=(keys)
         @magic_methods = keys.inject([]) { |acc, k| acc << k.to_s << "#{k}=" }
       end
-
-      private
 
       def define_singleton_getter(attribute)
         define_singleton_method attribute do
