@@ -3,9 +3,9 @@ module Rrod
     module Attributes
 
       def initialize(attributes = {})
-        extend attribute_methods(attributes.stringify_keys)
-        @attributes     = {}
-        self.attributes = attributes
+        @attributes        = {}
+        self.magic_methods = attributes.keys
+        self.attributes    = attributes
       end
 
       def id
@@ -48,22 +48,67 @@ module Rrod
       end
       alias :[]= :write_attribute
 
+      protected
+
+      def magic_methods=(keys)
+        @magic_methods = keys.inject([]) { |acc, k| acc << k.to_s << "#{k}=" }
+      end
+
       private
 
-      def attribute_methods(attributes)
-        attrs = attributes.tap { |a| a.delete('id') }
-
-        Module.new do
-          attrs.keys.each do |key|
-            define_method key do
-              read_attribute key
+      def method_missing(method, *args, &block)
+        name = method.to_s
+        if @magic_methods.include?(name)
+          if name[-1] == '='
+            define_singleton_method method do |value|
+              write_attribute method[0..-2], value
             end
-
-            define_method "#{key}=" do |value|
-              write_attribute key, value
+          else
+            define_singleton_method method do
+              read_attribute method
             end
           end
-        end 
+
+          public_send method, *args
+        else
+          super
+        end
+      end
+
+      def respond_to_missing?(*args)
+        @magic_methods.include? args.first.to_s
+      end
+
+      class MagicAttributes
+        attr_reader :attributes
+
+        def initialize(attributes)
+          @attributes = attributes
+        end
+
+        def methods
+          @methods ||= attributes.keys.map(&:to_s)
+        end
+
+        def respond_to?(method)
+          methods.include? attribute_name(method)
+        end
+
+        def attribute_name(method)
+          method[-1].eql?('=') ?  method[0..-2] : method
+        end
+
+        def respond(method, *args)
+          attribute = attribute_name(method)
+          model[attribute]
+          if setter?
+            model[attribute] = args.first
+          else
+            model[attribute]
+          end
+
+          true
+        end
       end
 
     end

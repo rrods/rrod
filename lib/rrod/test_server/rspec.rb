@@ -36,10 +36,8 @@ module Rrod
             Rrod::TestServer.stop if Rrod::TestServer.started?
           end
         end
-
       end
 
     end
   end
 end
-

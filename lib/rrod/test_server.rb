@@ -1,10 +1,6 @@
 # The test server was copied directly out of 
 # riak-ruby-client/spec/support/test_server.rb 
 # and broken into several modules, then refactored.
-#
-# A significant amount of this code appears to make
-# very little sense at first glance and needs to be
-# cleaned up.
 
 require 'yaml'
 require 'riak/test_server'
@@ -20,14 +16,14 @@ module Rrod
 
     class << self
       extend Forwardable
-      def_delegators(* %w[instance fatal] + DELEGATES)
+      def_delegators(:instance, * [:fatal] + DELEGATES)
     end
 
-    def_delegators(* [:server] + DELEGATES)
+    def_delegators(:server, *DELEGATES)
 
     def config
       loaded = YAML.load_file(Rrod.configuration.test_server_yml)
-      { min_port: 15_000 }.merge loaded
+      { min_port: 15_000 }.merge loaded.symbolize_keys
     rescue Errno::ENOENT => e
       message = "Cannot find Rrod::TestServer configuration. #{e.message}"
       raise MissingConfigurationError.new(message)
@@ -49,8 +45,9 @@ module Rrod
 
     private
 
+    # TODO refactor warnings
     def try_creating_riak_test_server!
-      Riak::TestServer.create(config.symbolize_keys)
+      Riak::TestServer.create(config)
     rescue SocketError => e
       warn "Couldn't connect to Riak TestServer!"
       warn "Skipping remaining integration tests."
