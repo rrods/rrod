@@ -10,7 +10,7 @@ module Rrod
           new(robject.data)
         end
 
-        def find_by(attributes)
+        def find_first_by(attributes)
           query = attributes_to_search(attributes)
           search = client.search(bucket_name, query)
           docs = search['docs']

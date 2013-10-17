@@ -18,7 +18,7 @@ describe Rrod::Model::Finders, integration: true do
 
   describe "finding by attributes in the hash" do
     it "can find one" do
-      found = model.find_by(make: 'Jeep')
+      found = model.find_first_by(make: 'Jeep')
       expect(found).to be_a model 
       expect(found.make).to eq "Jeep"
     end
