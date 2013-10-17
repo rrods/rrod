@@ -3,8 +3,9 @@ module Rrod
     extend  ActiveSupport::Concern
 
     include Attributes
-    include Persistence
     include Finders
+    include Persistence
+    include Schema
 
     module ClassMethods
       def client
