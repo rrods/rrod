@@ -19,12 +19,12 @@ module Rrod
               Rrod::TestServer.stop
             else
               Rrod::TestServer.create unless Rrod::TestServer.exist?
-              Rrod::TestServer.start
+              Rrod::TestServer.start  unless Rrod::TestServer.started?
             end
           end
 
           config.after(:each, :integration => true) do
-            # what on earth is happening in here???
+            # i really don't understand this...
             if !Rrod::TestServer.fatal && 
               Rrod::TestServer.started? && 
               example.metadata[:test_server] != false
