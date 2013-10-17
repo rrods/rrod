@@ -56,59 +56,29 @@ module Rrod
 
       private
 
-      def method_missing(method, *args, &block)
-        name = method.to_s
-        if @magic_methods.include?(name)
-          if name[-1] == '='
-            define_singleton_method method do |value|
-              write_attribute method[0..-2], value
-            end
-          else
-            define_singleton_method method do
-              read_attribute method
-            end
-          end
-
-          public_send method, *args
-        else
-          super
+      def define_singleton_getter(attribute)
+        define_singleton_method attribute do
+          read_attribute attribute
         end
+      end
+
+      def define_singleton_setter(attribute)
+        define_singleton_method "#{attribute}=" do |value|
+          write_attribute attribute, value
+        end
+      end
+
+      def method_missing(method_id, *args, &block)
+        method = method_id.to_s
+        return super unless @magic_methods.include?(method)
+
+        accessor = method.ends_with?('=') ? :setter : :getter
+        send "define_singleton_#{accessor}", method.chomp('=')
+        send method_id, *args
       end
 
       def respond_to_missing?(*args)
         @magic_methods.include? args.first.to_s
-      end
-
-      class MagicAttributes
-        attr_reader :attributes
-
-        def initialize(attributes)
-          @attributes = attributes
-        end
-
-        def methods
-          @methods ||= attributes.keys.map(&:to_s)
-        end
-
-        def respond_to?(method)
-          methods.include? attribute_name(method)
-        end
-
-        def attribute_name(method)
-          method[-1].eql?('=') ?  method[0..-2] : method
-        end
-
-        def respond(method, *args)
-          attribute = attribute_name(method)
-          model[attribute]
-          if setter?
-            model[attribute] = args.first
-          else
-            model[attribute]
-          end
-
-          true
-        end
       end
 
     end

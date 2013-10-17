@@ -19,13 +19,6 @@ describe Rrod::Model do
       expect(instance.id).to be_nil
     end
 
-    it "does not redefine methods if they are already defined" do
-      pending "worksl totally different now..."
-      instance = model.new(id: 'Dogs are silly!')
-      included_module = instance.send(:attribute_methods, instance.attributes)
-      expect(Class.new{extend included_module}).not_to respond_to :id 
-    end
-
     it "manages attribute keys as strings" do
       expect(instance.attributes).to eq hash.stringify_keys
     end
