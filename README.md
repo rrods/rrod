@@ -20,7 +20,13 @@ Once you have Riak and Rrod installed you can begin to play.  `Rrod` will
 connect to Riak on localhost using protocol buffers on port 8087.  What you
 say? Don't worry about it.  
 
-Next, in terminal, run:
+Next, if you installed Rrod by adding it to your Gemfile, run
+
+```
+$ bundle exec rrod pry
+```
+
+Otherwise, if you installed using `gem install rrod`, run:
 
 ```
 $ rrod pry
