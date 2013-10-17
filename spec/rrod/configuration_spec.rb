@@ -22,6 +22,12 @@ describe Rrod::Configuration do
 
   let(:config) { described_class.new }
 
+  describe "defaults" do
+    it "will use spec/support/test_server.yml for the test_server_yml" do
+      expect(config.test_server_yml).to match('spec/support/test_server.yml')
+    end
+  end
+
   describe "client" do
     it "creates a client based on its options" do
       config.pb_port = 123456
@@ -37,7 +43,7 @@ describe Rrod::Configuration do
   end
 
   describe "attributes" do
-    %w[pb_port client].each do |attribute|
+    %w[pb_port client test_server_yml].each do |attribute|
       it "allows configuration of #{attribute}" do
         expect(config).to respond_to attribute
         expect(config).to respond_to "#{attribute}="

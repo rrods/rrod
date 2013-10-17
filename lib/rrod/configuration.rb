@@ -12,7 +12,11 @@ module Rrod
   extend Config
 
   class Configuration
-    attr_accessor :client, :pb_port
+    attr_accessor :client, :pb_port, :test_server_yml
+
+    def initialize
+      @test_server_yml = File.expand_path('../../../spec/support/test_server.yml', __FILE__)
+    end
 
     def client
       @client ||= Riak::Client.new(client_options)
