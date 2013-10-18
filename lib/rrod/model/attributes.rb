@@ -1,6 +1,14 @@
 module Rrod
   module Model
     module Attributes
+      extend ActiveSupport::Concern
+
+      module ClassMethods
+        def cast_attribute(key, value)
+          attribute = attributes[key.to_sym]
+          attribute ? attribute.cast(value) : value
+        end
+      end
 
       def initialize(attributes = {})
         @attributes        = {}
@@ -44,7 +52,7 @@ module Rrod
       # @param [Symbol, String] the key of the attribute to write
       # @param the value to write to attributes
       def write_attribute(key, value)
-        @attributes[key.to_s] = value
+        @attributes[key.to_s] = self.class.cast_attribute(key, value)
       end
       alias :[]= :write_attribute
 
@@ -54,23 +62,19 @@ module Rrod
         @magic_methods = keys.inject([]) { |acc, k| acc << k.to_s << "#{k}=" }
       end
 
-      def define_singleton_getter(attribute)
-        define_singleton_method attribute do
-          read_attribute attribute
-        end
+      def define_singleton_reader(attribute)
+        define_singleton_method attribute, Attribute.reader_definition(attribute)
       end
 
-      def define_singleton_setter(attribute)
-        define_singleton_method "#{attribute}=" do |value|
-          write_attribute attribute, value
-        end
+      def define_singleton_writer(attribute)
+        define_singleton_method "#{attribute}=", Attribute.writer_definition(attribute)
       end
 
       def method_missing(method_id, *args, &block)
         method = method_id.to_s
         return super unless @magic_methods.include?(method)
 
-        accessor = method.ends_with?('=') ? :setter : :getter
+        accessor = method.ends_with?('=') ? :writer : :reader
         send "define_singleton_#{accessor}", method.chomp('=')
         send method_id, *args
       end

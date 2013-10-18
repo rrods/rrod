@@ -5,7 +5,6 @@ class Address
   attribute :city,       String
   attribute :state_abbr, String   
   attribute :zip,        String
-
 end
 
 class Vaccination
@@ -18,9 +17,9 @@ end
 class Pet
   include Rrod::Model
 
-  attribute :name,    String
-  attribute :species, String
-  attribute :gender,  Symbol
+  attribute :name,     String
+  attribute :species,  String
+  attribute :friendly, Boolean
 
   attribute :vaccinations, [Vaccination], default: -> { 
     Vaccination.new(type: :rabies, when: Date.today)

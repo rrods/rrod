@@ -20,6 +20,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "riak-client",   "~> 1.4.2"
   spec.add_dependency "activesupport", ">= 3.2"
+  spec.add_dependency "american_date", ">= 1.1.0"
 
   # cli deps
   spec.add_dependency "thor", "~> 0.18"
