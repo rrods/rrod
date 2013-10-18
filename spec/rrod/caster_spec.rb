@@ -4,10 +4,6 @@ describe Rrod::Caster do
   let(:type)   { nil }
   let(:caster) { "#{described_class}::#{type}".constantize }
 
-  describe "casting instances" do
-    it "is pretty fancy"
-  end
-
   describe "BigDecimal" do
     let(:type) { 'BigDecimal' } 
     it "converts to big decimal" do
