@@ -10,6 +10,12 @@ module Rrod
       @casting.(value)
     end
             
+    module Boolean
+      def self.rrod_cast(value)
+        [nil, false, 'false', 0, '0'].include?(value) ? false : true
+      end
+    end
+
     BigDecimal = new { |value| ::BigDecimal.new(value.to_s) } 
     Date       = new { |value| value.to_date }
     DateTime   = new { |value| value.to_datetime }

@@ -11,6 +11,41 @@ describe Rrod::Caster do
     end
   end
 
+  describe "Boolean" do
+    let(:type) { 'Boolean' }
+    it "converts to true" do
+      expect(caster.rrod_cast(true)).to be true
+    end
+    it "converts 'true' to true" do
+      expect(caster.rrod_cast("true")).to be true
+    end
+    it "converts 1 to true" do
+      expect(caster.rrod_cast(1)).to be true
+    end
+    it "converts '1' to true" do
+      expect(caster.rrod_cast("1")).to be true
+    end    
+    it "converts to false" do
+      expect(caster.rrod_cast(false)).to be false
+    end
+    it "converts 'false' to false" do
+      expect(caster.rrod_cast("false")).to be false
+    end
+    it "converts 0 to false" do
+      expect(caster.rrod_cast(0)).to be false
+    end
+    it "converts '0' to false" do
+      expect(caster.rrod_cast("0")).to be false
+    end    
+    it "converts nil to false" do
+      expect(caster.rrod_cast(nil)).to be false
+    end    
+    it "converts everything else to true" do
+      expect(caster.rrod_cast(Object.new)).to be true
+    end
+
+  end
+
   describe "Date" do
     let(:type) { 'Date' }
     let(:date) { Date.parse("2013-10-31") }
@@ -71,7 +106,7 @@ describe Rrod::Caster do
       expect(caster.rrod_cast('symbol')).to eq :symbol
     end
   end
-   
+
   describe "Time" do
     let(:type) { 'Time' }
     let(:time) { "12:13:14".to_time }
