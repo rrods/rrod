@@ -11,7 +11,7 @@ require 'rrod/version' # first
 require 'rrod/configuration'
 require 'rrod/caster'
 require 'rrod/model/attribute'
-require 'rrod/model/attributes'
+require 'rrod/model/attribute_methods'
 require 'rrod/model/finders'
 require 'rrod/model/persistence'
 require 'rrod/model/schema'

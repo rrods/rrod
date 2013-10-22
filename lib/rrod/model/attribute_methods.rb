@@ -1,14 +1,6 @@
 module Rrod
   module Model
-    module Attributes
-      extend ActiveSupport::Concern
-
-      module ClassMethods
-        def cast_attribute(key, value)
-          attribute = attributes[key.to_sym]
-          attribute ? attribute.cast(value) : value
-        end
-      end
+    module AttributeMethods
 
       def initialize(attributes = {})
         @attributes        = {}

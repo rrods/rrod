@@ -2,12 +2,13 @@ module Rrod
   module Model
     extend  ActiveSupport::Concern
 
-    include Attributes
-    include Finders
+    include AttributeMethods
     include Persistence
-    include Schema
 
     module ClassMethods
+      include Finders
+      include Schema
+
       def client
         Rrod.configuration.client
       end

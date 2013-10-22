@@ -1,6 +1,7 @@
 module Rrod
   module Model
     module Persistence
+      attr_accessor :robject
 
       def persisted?
         @persisted
