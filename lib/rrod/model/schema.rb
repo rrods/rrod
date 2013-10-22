@@ -15,6 +15,10 @@ module Rrod
         attribute ? attribute.cast(value) : value
       end
 
+      def schema?
+        attributes.any?
+      end
+
     end
   end
 end

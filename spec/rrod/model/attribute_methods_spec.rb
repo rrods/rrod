@@ -45,5 +45,17 @@ describe Rrod::Model do
       end
     end
 
+    describe "with schema" do
+      let(:model) { Class.new(Car) { attribute :wheels, Integer } }
+
+      it "does not allow creating with arbitrary attributes" do
+        expect { model.new(model: 'Jeep') }.to raise_error
+      end
+
+      it "can be created with the specified attributes" do
+        expect(model.new(wheels: 5).wheels).to be 5
+      end
+    end
+
   end
 end

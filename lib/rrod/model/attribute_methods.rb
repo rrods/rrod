@@ -51,6 +51,7 @@ module Rrod
       private
 
       def magic_methods=(keys)
+        return if self.class.schema? # classes with attributes don't get magic methods
         @magic_methods = keys.inject([]) { |acc, k| acc << k.to_s << "#{k}=" }
       end
 
