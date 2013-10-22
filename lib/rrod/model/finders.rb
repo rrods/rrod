@@ -4,6 +4,7 @@ module Rrod
 
       def find(id)
         robject = bucket.get(id)
+        raise NotFoundError.new if robject.nil?
         found(robject.data, robject)
       end
 
@@ -13,10 +14,24 @@ module Rrod
         found(docs.first)
       end
 
+      def find_first_by!(attributes)
+        find_first_by(attributes).tap { |model|
+          raise NotFoundError.new if model.nil?
+        }
+      end
+
       def find_all_by(attributes)
         docs = search(attributes) || []
         docs.map { |doc| found(doc) }
       end
+
+      def find_all_by!(attributes)
+        find_all_by(attributes).tap { |models|
+          raise NotFoundError.new if models.empty?
+        }
+      end
+
+      private
 
       def attributes_to_search(attributes)
         attributes.map { |key, value| "#{key}:#{value}" }.join(" AND ")
@@ -36,5 +51,7 @@ module Rrod
       end
 
     end
+
+    NotFoundError = Class.new(StandardError)
   end
 end

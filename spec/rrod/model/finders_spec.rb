@@ -16,6 +16,8 @@ describe Rrod::Model::Finders, integration: true do
     expect(found).to be_a model
   end
 
+  it "will raise an error if it can't be found"
+
   it "is persisted" do
     found = model.find(instance.id)
     expect(found).to be_persisted
@@ -31,6 +33,8 @@ describe Rrod::Model::Finders, integration: true do
         expect(found.make).to eq "Jeep"
       end
 
+      it "will work properly when finding by id"
+
       it "will return nil if one can't be found"
 
       it "will raise an exception if one can't be found with a !"
@@ -44,6 +48,8 @@ describe Rrod::Model::Finders, integration: true do
         expect(found).to be_a model 
         expect(found.make).to eq "Jeep"
       end
+
+      it "will work properly when finding all by id"
 
       it "will return [] if none can be found"
 
