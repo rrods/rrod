@@ -12,7 +12,7 @@ module Rrod
     extend Forwardable
     include Singleton
 
-    DELEGATES = %w[start stop create drop pb_port started? exist?]
+    DELEGATES = %w[wait_for_search start stop create drop http_port pb_port config started? search_started? exist?]
 
     class << self
       extend Forwardable
@@ -31,6 +31,16 @@ module Rrod
 
     def server
       @server ||= try_creating_riak_test_server!
+    end
+
+    def search_started?
+      wait_for_search.chomp.eql? "riak_search is up"
+    end
+    
+    def wait_for_search
+      Timeout.timeout(Rrod.configuration.test_server_search_startup_timeout) do
+        server.send :riak_admin, 'wait-for-service', 'riak_search', server.name
+      end
     end
 
     def warn_crash_log

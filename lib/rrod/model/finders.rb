@@ -1,34 +1,58 @@
 module Rrod
   module Model
     module Finders
-      extend ActiveSupport::Concern
 
-      module ClassMethods
+      def find(id)
+        find_one(id).tap { |found| raise NotFound.new if found.nil? }
+      end
 
-        def find(id)
-          robject = bucket.get(id)
-          new(robject.data)
-        end
+      def find_one(id)
+        robject = bucket.get(id) 
+        found(robject.data, robject) 
+      rescue Riak::FailedRequest => e 
+        raise e unless e.not_found?
+      end
 
-        def find_first_by(attributes)
-          query = attributes_to_search(attributes)
-          search = client.search(bucket_name, query)
-          docs = search['docs']
-          # TODO ensure docs.first not nil
-          new(docs.first)
-        end
+      def find_first_by(attributes)
+        query = Query.new(attributes)
 
-        def find_all_by(attributes)
-          query = attributes_to_search(attributes)
-          search = client.search(bucket_name, query)
-          docs = search['docs']
-          docs.map { |doc| new(doc) }
-        end
-
-        def attributes_to_search(attributes)
-          attributes.map { |key, value| "#{key}:#{value}" }.join(" AND ")
+        if query.using_id?
+          find_one(query.id)
+        else
+          docs = search(query)
+          docs.any? ? found(docs.first) : nil
         end
       end
+
+      def find_first_by!(attributes)
+        find_first_by(attributes).tap { |model| raise NotFound.new if model.nil? }
+      end
+
+      def find_all_by(attributes)
+        query = Query.new(attributes)
+        raise ArgumentError.new('Cannot pass id to find_all_by') if query.using_id?
+        search(query).map { |doc| found(doc) }
+      end
+
+      def find_all_by!(attributes)
+        find_all_by(attributes).tap { |models| raise NotFound.new if models.empty? }
+      end
+
+      private
+
+      def search(query)
+        client.search(bucket_name, query.to_s)['docs']
+      end
+
+      def found(data, robject=nil)
+        new(data).tap { |instance| 
+          instance.robject = robject
+          instance.instance_variable_set(:@persisted, true)
+        }
+      end
+
     end
+
+    NotFound = Class.new(StandardError)
   end
 end

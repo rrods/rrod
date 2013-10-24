@@ -1,18 +1,22 @@
 module Rrod
   module Model
     module Schema
-      extend ActiveSupport::Concern
 
-      module ClassMethods
-        def attributes
-          @attributes ||= {}
-        end
+      def attributes
+        @attributes ||= {}
+      end
 
-        def attribute(name, type, options={})
-          name_id = name.to_sym
-          attributes[name_id] = Attribute.new(self, name, type, options)
-          attributes[name_id].define
-        end
+      def attribute(name, type, options={})
+        attributes[name.to_sym] = Attribute.new(self, name, type, options).define
+      end
+
+      def cast_attribute(key, value)
+        attribute = attributes[key.to_sym]
+        attribute ? attribute.cast(value) : value
+      end
+
+      def schema?
+        attributes.any?
       end
 
     end

@@ -1,14 +1,6 @@
 module Rrod
   module Model
-    module Attributes
-      extend ActiveSupport::Concern
-
-      module ClassMethods
-        def cast_attribute(key, value)
-          attribute = attributes[key.to_sym]
-          attribute ? attribute.cast(value) : value
-        end
-      end
+    module AttributeMethods
 
       def initialize(attributes = {})
         @attributes        = {}
@@ -59,6 +51,7 @@ module Rrod
       private
 
       def magic_methods=(keys)
+        return if self.class.schema? # classes with attributes don't get magic methods
         @magic_methods = keys.inject([]) { |acc, k| acc << k.to_s << "#{k}=" }
       end
 

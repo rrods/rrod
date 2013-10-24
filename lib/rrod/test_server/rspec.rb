@@ -6,7 +6,10 @@ module Rrod
 
       def self.enable!
         Rrod.configure do |config|
-          config.pb_port = Rrod::TestServer.pb_port
+          # We have to use http to set bucket props (to enable search index)
+          # https://github.com/basho/riak-ruby-client/blob/v1.4.2/lib/riak/client.rb#L500
+          config.http_port = Rrod::TestServer.http_port
+          config.pb_port   = Rrod::TestServer.pb_port
         end
 
         ::RSpec.configure do |config|
@@ -19,7 +22,11 @@ module Rrod
               Rrod::TestServer.stop
             else
               Rrod::TestServer.create unless Rrod::TestServer.exist?
-              Rrod::TestServer.start  unless Rrod::TestServer.started?
+              unless Rrod::TestServer.started?
+                @rspec_started = true
+                Rrod::TestServer.start
+                Rrod::TestServer.wait_for_search
+              end
             end
           end
 
@@ -33,7 +40,7 @@ module Rrod
           end
 
           config.after(:suite) do
-            Rrod::TestServer.stop if Rrod::TestServer.started?
+            Rrod::TestServer.stop if @rspec_started && Rrod::TestServer.started?
           end
         end
       end

@@ -18,7 +18,7 @@ module Rrod
       # @param [Hash] Options for the attribute (they are optional).
       def initialize(model, name, type, options={})
         self.model   = model
-        self.name    = name
+        self.name    = name.to_sym
         self.type    = type
         self.options = options
       end
@@ -31,6 +31,7 @@ module Rrod
       def define
         define_reader
         define_writer
+        self
       end
 
       def cast(value)

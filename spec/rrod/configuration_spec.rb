@@ -31,7 +31,7 @@ describe Rrod::Configuration do
   describe "client" do
     it "creates a client based on its options" do
       config.pb_port = 123456
-      expect(Riak::Client).to receive(:new).with(pb_port: 123456)
+      expect(Riak::Client).to receive(:new).with(pb_port: 123456, protocol: 'pbc')
       config.client
     end
 
@@ -43,7 +43,8 @@ describe Rrod::Configuration do
   end
 
   describe "attributes" do
-    %w[pb_port client test_server_yml].each do |attribute|
+    %w[http_port pb_port protocol client test_server_yml
+       test_server_search_startup_timeout].each do |attribute|
       it "allows configuration of #{attribute}" do
         expect(config).to respond_to attribute
         expect(config).to respond_to "#{attribute}="
