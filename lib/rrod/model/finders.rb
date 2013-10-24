@@ -3,44 +3,45 @@ module Rrod
     module Finders
 
       def find(id)
-        robject = bucket.get(id)
-        raise NotFoundError.new if robject.nil?
-        found(robject.data, robject)
+        find_one(id).tap { |found| raise NotFound.new if found.nil? }
+      end
+
+      def find_one(id)
+        robject = bucket.get(id) 
+        found(robject.data, robject) 
+      rescue Riak::FailedRequest => e 
+        raise e unless e.not_found?
       end
 
       def find_first_by(attributes)
-        docs = search(attributes)
-        return if docs.blank?
-        found(docs.first)
+        query = Query.new(attributes)
+
+        if query.using_id?
+          find_one(query.id)
+        else
+          docs = search(query)
+          docs.any? ? found(docs.first) : nil
+        end
       end
 
       def find_first_by!(attributes)
-        find_first_by(attributes).tap { |model|
-          raise NotFoundError.new if model.nil?
-        }
+        find_first_by(attributes).tap { |model| raise NotFound.new if model.nil? }
       end
 
       def find_all_by(attributes)
-        docs = search(attributes) || []
-        docs.map { |doc| found(doc) }
+        query = Query.new(attributes)
+        raise ArgumentError.new('Cannot pass id to find_all_by') if query.using_id?
+        search(query).map { |doc| found(doc) }
       end
 
       def find_all_by!(attributes)
-        find_all_by(attributes).tap { |models|
-          raise NotFoundError.new if models.empty?
-        }
+        find_all_by(attributes).tap { |models| raise NotFound.new if models.empty? }
       end
 
       private
 
-      def attributes_to_search(attributes)
-        attributes.map { |key, value| "#{key}:#{value}" }.join(" AND ")
-      end
-
-      def search(attributes)
-        query = attributes_to_search(attributes)
-        search = client.search(bucket_name, query)
-        search['docs']
+      def search(query)
+        client.search(bucket_name, query.to_s)['docs']
       end
 
       def found(data, robject=nil)
@@ -52,6 +53,6 @@ module Rrod
 
     end
 
-    NotFoundError = Class.new(StandardError)
+    NotFound = Class.new(StandardError)
   end
 end

@@ -23,6 +23,7 @@ module Rrod
             else
               Rrod::TestServer.create unless Rrod::TestServer.exist?
               unless Rrod::TestServer.started?
+                @rspec_started = true
                 Rrod::TestServer.start
                 Rrod::TestServer.wait_for_search
               end
@@ -39,7 +40,7 @@ module Rrod
           end
 
           config.after(:suite) do
-            Rrod::TestServer.stop if Rrod::TestServer.started?
+            Rrod::TestServer.stop if @rspec_started && Rrod::TestServer.started?
           end
         end
       end

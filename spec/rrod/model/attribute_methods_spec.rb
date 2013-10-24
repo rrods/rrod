@@ -57,5 +57,8 @@ describe Rrod::Model do
       end
     end
 
+    describe "query generation" do
+      it "lets you use strings with apostrophes in them" 
+    end
   end
 end

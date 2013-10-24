@@ -29,13 +29,12 @@ module Rrod
 
     def client_options
       attributes = %w[http_port pb_port protocol]
-      Hash[
-        attributes.map { |method| 
+      attributes.inject({}) do |acc, method|
+        acc.tap { |hash|
           value = public_send(method)
-          next if value.nil?
-          [method.to_sym, value] 
-        }.compact
-      ]
+          hash[method.to_sym] = value unless value.nil?
+        }
+      end
     end
   end
 end
