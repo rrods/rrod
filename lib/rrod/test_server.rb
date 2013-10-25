@@ -1,6 +1,7 @@
 # The test server was copied directly out of 
 # riak-ruby-client/spec/support/test_server.rb 
-# and broken into several modules, then refactored.
+# and refactored into a class that can be used
+# to control the server's lifecycle
 
 require 'yaml'
 require 'riak/test_server'

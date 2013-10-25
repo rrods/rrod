@@ -49,7 +49,7 @@ describe Rrod::Model do
       let(:model) { Class.new(Car) { attribute :wheels, Integer } }
 
       it "does not allow creating with arbitrary attributes" do
-        expect { model.new(model: 'Jeep') }.to raise_error
+        expect { model.new(model: 'Jeep') }.to raise_error(NoMethodError, /model=/)
       end
 
       it "can be created with the specified attributes" do

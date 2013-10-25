@@ -4,6 +4,7 @@ module Rrod
 
     include AttributeMethods
     include Persistence
+    include Serialization
 
     module ClassMethods
       include Finders

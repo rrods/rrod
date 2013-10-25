@@ -85,5 +85,18 @@ describe Rrod::Model::Attribute do
       instance.example = self
       expect(instance.example).to be self
     end
+
+    describe "nested rrod models" do
+      let(:type) { [Class.new { include Rrod::Model }] }
+
+      it "can detect if the type is a nested rrod model" do
+        expect(attribute.send :nested_model?).to be true
+      end
+
+      it "adds a rrod_cast method to the nested rrod model reference object" do
+        attribute
+        expect(type).to respond_to(:rrod_cast)
+      end
+    end
   end
 end
