@@ -19,6 +19,12 @@ module Rrod
         attributes.any?
       end
 
+      def rrod_cast(value)
+        return       if value.nil?
+        return value if value.is_a?(Rrod::Model)
+        found(value)
+      end
+
     end
   end
 end

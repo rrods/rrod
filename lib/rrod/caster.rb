@@ -11,7 +11,8 @@ module Rrod
     end
             
     module Boolean
-      def self.rrod_cast(value)
+      extend self
+      def rrod_cast(value)
         [nil, false, 'false', 0, '0'].include?(value) ? false : true
       end
     end

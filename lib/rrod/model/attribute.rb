@@ -47,6 +47,11 @@ module Rrod
 
       def type=(value)
         @type = value
+        @type.extend(Rrod::Caster::NestedModel) if nested_model?
+      end
+
+      def nested_model?
+        type.is_a?(Array) and type.first.ancestors.include?(Rrod::Model)
       end
 
       def define_reader
