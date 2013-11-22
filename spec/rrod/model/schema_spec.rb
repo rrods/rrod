@@ -43,6 +43,17 @@ describe Rrod::Model::Schema do
       expect(person.pets.first.name).to eq 'Molle'
     end
 
+    it "will properly serialize nested models" do
+      instance.address = Address.new(street: '123 Fancy Pants Lane')
+      instance.pets    = [Pet.new(name: 'Molle')]
+      instance.name    = 'Zoolander'
+      json             = instance.as_json
+
+      expect(json).to be_a Hash
+      expect(json['pets']).to    eq [{'name' => 'Molle'}]
+      expect(json['address']).to eq 'street' => '123 Fancy Pants Lane'
+    end
+
   end
 
 end
