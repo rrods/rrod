@@ -29,11 +29,11 @@ end
 class Person
   include Rrod::Model
 
-  attribute :name,   String
-  attribute :age,    Integer
-  attribute :gender, Symbol
+  attribute :name,    String
+  attribute :age,     Integer
+  attribute :gender,  Symbol
 
   attribute :address, Address
 
-  attribute :pets,   [Pet]
+  attribute :pets,    [Pet]
 end

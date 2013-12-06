@@ -47,11 +47,11 @@ describe Rrod::Model::Schema do
       instance.address = Address.new(street: '123 Fancy Pants Lane')
       instance.pets    = [Pet.new(name: 'Molle')]
       instance.name    = 'Zoolander'
-      json             = instance.as_json
+      hash             = instance.serializable_hash
 
-      expect(json).to be_a Hash
-      expect(json['pets']).to    eq [{'name' => 'Molle'}]
-      expect(json['address']).to eq 'street' => '123 Fancy Pants Lane'
+      expect(hash).to be_a Hash
+      expect(hash['pets']).to    eq [{'name' => 'Molle'}]
+      expect(hash['address']).to eq 'street' => '123 Fancy Pants Lane'
     end
 
   end

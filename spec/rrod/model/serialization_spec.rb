@@ -11,9 +11,7 @@ describe Rrod::Model::Serialization do
   end
 
   it "calls to_json on its as_json representation" do
-    instance.stub(:as_json).and_return(attributes)
-    expect(instance.as_json).to receive(:to_json)
-    instance.to_json
+    expect(instance.as_json).to eq(JSON.parse instance.to_json)
   end
 
 end
