@@ -38,7 +38,7 @@ describe Rrod::Model::Schema do
       instance.pets = [Pet.new(name: 'Molle')]
       instance.save
       person = Person.find(instance.id)
-      expect(person.pets).to be_an Array
+      expect(person.pets).to be_an Rrod::Model::Collection
       expect(person.pets.first).to be_a Pet
       expect(person.pets.first.name).to eq 'Molle'
     end

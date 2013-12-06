@@ -4,9 +4,7 @@ module Rrod
 
       def rrod_cast(values)
         return if values.nil?
-        values.map do |value|
-          model.rrod_cast(value)
-        end
+        Rrod::Model::Collection.new(values.map { |value| model.rrod_cast(value) })
       end
 
       def model
