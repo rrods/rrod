@@ -44,7 +44,7 @@ describe Rrod::Configuration do
 
   describe "attributes" do
     %w[http_port pb_port protocol client test_server_yml
-       test_server_search_startup_timeout].each do |attribute|
+       test_server_search_startup_timeout nodes].each do |attribute|
       it "allows configuration of #{attribute}" do
         expect(config).to respond_to attribute
         expect(config).to respond_to "#{attribute}="
