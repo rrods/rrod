@@ -1,6 +1,6 @@
 module Rrod
   class Query
-    attr_reader :options
+    attr_accessor :options
 
     def initialize(options)
       self.options = options
