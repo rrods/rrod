@@ -3,8 +3,7 @@ module Rrod
     attr_reader :options
 
     def initialize(options)
-      @options = options.with_indifferent_access
-      validate_options!
+      self.options = options
     end
 
     def id
@@ -19,11 +18,12 @@ module Rrod
       options.map { |key, value| "#{key}:#{value}" }.join(" AND ")
     end
 
-    private
-
-    def validate_options!
+    def options=(options)
+      @options = options.with_indifferent_access
       raise ArgumentError.new("no search options") if options.blank?
       raise ArgumentError.new("cannot mix id with other options") if using_id? and options.keys.count > 1
+    rescue => e
+      @options.clear and raise e
     end
 
   end
