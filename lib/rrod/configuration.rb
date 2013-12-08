@@ -17,7 +17,7 @@ module Rrod
 
     def initialize
       @protocol        = 'pbc'
-      @test_server_yml = File.expand_path('../../../spec/support/test_server.yml', __FILE__)
+      @test_server_yml = File.expand_path('spec/support/test_server.yml', '.')
       @test_server_search_startup_timeout = 40 # because it's a test
     end
 

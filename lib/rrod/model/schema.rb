@@ -22,7 +22,7 @@ module Rrod
       def rrod_cast(value)
         return       if value.nil?
         return value if value.is_a?(Rrod::Model)
-        found(value)
+        found(nil, value)
       end
 
     end
