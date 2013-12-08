@@ -13,11 +13,11 @@ module Rrod
 
   class Configuration
     attr_accessor :client, :http_port, :pb_port, :protocol, 
-      :test_server_yml, :test_server_search_startup_timeout
+      :test_server_yml, :test_server_search_startup_timeout, :nodes
 
     def initialize
       @protocol        = 'pbc'
-      @test_server_yml = File.expand_path('../../../spec/support/test_server.yml', __FILE__)
+      @test_server_yml = File.expand_path('spec/support/test_server.yml', '.')
       @test_server_search_startup_timeout = 40 # because it's a test
     end
 
@@ -28,7 +28,7 @@ module Rrod
     private
 
     def client_options
-      attributes = %w[http_port pb_port protocol]
+      attributes = %w[http_port pb_port protocol nodes]
       attributes.inject({}) do |acc, method|
         acc.tap { |hash|
           value = public_send(method)

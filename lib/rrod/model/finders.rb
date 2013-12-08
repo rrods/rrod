@@ -8,7 +8,7 @@ module Rrod
 
       def find_one(id)
         robject = bucket.get(id) 
-        found(robject.data, robject) 
+        found(id, robject.data, robject) 
       rescue Riak::FailedRequest => e 
         raise e unless e.not_found?
       end
@@ -20,7 +20,7 @@ module Rrod
           find_one(query.id)
         else
           docs = search(query)
-          docs.any? ? found(docs.first) : nil
+          docs.any? ? found(nil, docs.first) : nil
         end
       end
 
@@ -31,7 +31,7 @@ module Rrod
       def find_all_by(attributes)
         query = Query.new(attributes)
         raise ArgumentError.new('Cannot pass id to find_all_by') if query.using_id?
-        search(query).map { |doc| found(doc) }
+        search(query).map { |doc| found(nil, doc) }
       end
 
       def find_all_by!(attributes)
@@ -44,8 +44,9 @@ module Rrod
         client.search(bucket_name, query.to_s)['docs']
       end
 
-      def found(data, robject=nil)
+      def found(key, data, robject=nil)
         new(data).tap { |instance| 
+          instance.id      = key
           instance.robject = robject
           instance.instance_variable_set(:@persisted, true)
         }
