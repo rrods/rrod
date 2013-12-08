@@ -3,18 +3,28 @@ module Rrod
     class Collection
       include Enumerable
 
-      attr_accessor :collection
-      delegate :each, :count, :size, :length, to: :collection
+      delegate(*%w[clear count each length size], to: :collection)
 
-      def initialize(collection)
+      def initialize(collection=[])
         self.collection = collection
       end
 
       def collection=(collection)
-        raise InvalidCollectionTypeError.new unless Enumerable === collection
-        raise InvalidMemberTypeError.new     unless collection.all? { |member| Rrod::Model === member }
-        @collection = collection
+        raise InvalidCollectionTypeError.new unless collection.respond_to?(:each)
+        collection.map { |member| push member }
+      rescue InvalidMemberTypeError => e
+        clear and raise e
       end
+
+      def collection
+        @collection ||= []
+      end
+
+      def push(value)
+        raise InvalidMemberTypeError.new unless Rrod::Model === (value)
+        collection.push(value)
+      end
+      alias :<< :push
 
       def serializable_hash(*)
         collection.map(&:serializable_hash)
