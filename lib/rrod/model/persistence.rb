@@ -1,6 +1,8 @@
 module Rrod
   module Model
     module Persistence
+      extend ActiveSupport::Concern # so we can override save
+
       attr_accessor :robject
 
       def persisted?
@@ -12,9 +14,8 @@ module Rrod
       end
       alias :new_record? :new?
 
-      def save(options={})
-        options.fetch(:validate, true) ? 
-          (valid? and persist) : persist
+      def save
+        persist
       end
 
       def persist

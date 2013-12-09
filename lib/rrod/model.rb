@@ -5,9 +5,9 @@ module Rrod
     include AttributeMethods
     include Persistence
     include Serialization
-    include ActiveModel::Serializers::JSON
-    include ActiveModel::Serializers::Xml
-    include ActiveModel::Validations
+
+    include Validations
+    include Callbacks
 
     module ClassMethods
       include Finders
