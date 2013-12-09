@@ -8,6 +8,7 @@ module Rrod
 
     include Validations
     include Callbacks
+    include Timestamps
 
     module ClassMethods
       include Finders
