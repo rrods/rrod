@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Rrod::Model::Attribute do
-  let(:options)   { {fancy: true} }
+  let(:options)   { {presence: true} }
   let(:model)     { Class.new { include Rrod::Model } }
   let(:instance)  { model.new }
   let(:name)      { :name }

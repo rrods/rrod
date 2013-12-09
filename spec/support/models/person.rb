@@ -29,11 +29,13 @@ end
 class Person
   include Rrod::Model
 
-  attribute :name,    String
-  attribute :age,     Integer
+  attribute :name,    String, presence: true
+  attribute :age,     Integer, numericality: {min: 10}
   attribute :gender,  Symbol
 
   attribute :address, Address
 
   attribute :pets,    [Pet]
+
+  validates_length_of :pets, minimum: 1
 end

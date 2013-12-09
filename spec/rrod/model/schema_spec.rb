@@ -28,7 +28,7 @@ describe Rrod::Model::Schema do
     it "allows embedding other Rrod::Model's as attributes" do
       instance.address        = Address.new
       instance.address.street = '123 Fancy Pants Court'
-      instance.save
+      instance.save(validate: false)
       person = Person.find(instance.id)
       expect(person.address).to be_an Address
       expect(person.address.street).to eq '123 Fancy Pants Court'
@@ -36,7 +36,7 @@ describe Rrod::Model::Schema do
 
     it "allows embedding an array of Rrod::Model's as an attribute" do
       instance.pets = [Pet.new(name: 'Molle')]
-      instance.save
+      instance.save(validate: false)
       person = Person.find(instance.id)
       expect(person.pets).to be_an Rrod::Model::Collection
       expect(person.pets.first).to be_a Pet

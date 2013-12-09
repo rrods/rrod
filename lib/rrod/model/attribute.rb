@@ -10,7 +10,7 @@ module Rrod
         ->(value) { write_attribute name, value }
       end
        
-      attr_accessor :model, :name, :type, :options
+      attr_accessor :model, :name, :type, :options, :default
 
       # @param [Class] The class that is declaring the attribute
       # @param [Symbol] The name of the attribute
@@ -20,17 +20,19 @@ module Rrod
         self.model   = model
         self.name    = name.to_sym
         self.type    = type
+        self.default = options.delete(:default)
         self.options = options
       end
 
       # @return [Object] default value or result of call on default value
       def default
-        options[:default].respond_to?(:call) ? options[:default].call : options[:default]
+        @default.respond_to?(:call) ? @default.call : @default
       end
 
       def define
         define_reader
         define_writer
+        apply_validators
         self
       end
 
@@ -60,6 +62,10 @@ module Rrod
 
       def define_writer
         model.send :define_method, "#{name}=", self.class.writer_definition(name)
+      end
+
+      def apply_validators
+        model.validates name, options if options.present?
       end
 
       def rrod_caster

@@ -12,8 +12,9 @@ module Rrod
       end
       alias :new_record? :new?
 
-      def save
-        persist 
+      def save(options={})
+        options.fetch(:validate, true) ? 
+          (valid? and persist) : persist
       end
 
       def persist
