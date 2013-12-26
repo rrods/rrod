@@ -2,6 +2,8 @@ module Rrod
   module Model
     module AttributeMethods
 
+      attr_accessor :_parent
+
       def initialize(attributes = {})
         @attributes        = {}
         self.magic_methods = attributes.keys
@@ -44,11 +46,21 @@ module Rrod
       # @param [Symbol, String] the key of the attribute to write
       # @param the value to write to attributes
       def write_attribute(key, value)
-        @attributes[key.to_s] = self.class.cast_attribute(key, value)
+        @attributes[key.to_s] = write_parent(self.class.cast_attribute(key, value))
       end
       alias :[]= :write_attribute
 
       private
+
+      def write_parent(attribute)
+        case attribute
+        when Rrod::Model
+          attribute._parent = self
+        when Rrod::Model::Collection
+          attribute.each { |attr| attr._parent = self }
+        end
+        attribute
+      end
 
       def magic_methods=(keys)
         return if self.class.schema? # classes with attributes don't get magic methods

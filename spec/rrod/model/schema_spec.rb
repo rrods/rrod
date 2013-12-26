@@ -54,6 +54,16 @@ describe Rrod::Model::Schema do
       expect(hash['address']).to eq 'street' => '123 Fancy Pants Lane'
     end
 
+    it "will set the parent on a nested model when assigned" do
+      instance.address = Address.new
+      expect(instance.address._parent).to eq(instance)
+    end
+
+    it "will alias the parent with method given to nested_in" do
+      instance.pets = [Pet.new]
+      expect(instance.pets.first.owner).to eq(instance)
+    end
+
   end
 
 end

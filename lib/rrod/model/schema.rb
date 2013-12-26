@@ -15,6 +15,10 @@ module Rrod
         attribute ? attribute.cast(value) : value
       end
 
+      def nested_in(parent)
+        define_method(parent) { @_parent }
+      end
+
       def schema?
         attributes.any?
       end

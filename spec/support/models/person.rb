@@ -16,6 +16,7 @@ end
 
 class Pet
   include Rrod::Model
+  nested_in :owner
 
   attribute :name,     String
   attribute :species,  String
