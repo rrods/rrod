@@ -30,10 +30,13 @@ describe Rrod::Model::Attribute do
   end
 
   describe "defaults" do
+    let(:default) { attribute.default(instance) }
+  
     context "when a value" do
       let(:options) { {default: 'SOO fluffy!'} }
+
       it "can provide a default value" do
-        expect(attribute.default).to eq 'SOO fluffy!'
+        expect(default).to eq 'SOO fluffy!'
       end
     end
 
@@ -41,7 +44,17 @@ describe Rrod::Model::Attribute do
       let(:options) { {default: -> { 'alligator' }} }
 
       it "can provide a default value if a proc" do
-        expect(attribute.default).to eq 'alligator'
+        expect(default).to eq 'alligator'
+      end
+
+      context "given an instance" do
+        let(:model)   { Class.new { include Rrod::Model; attr_accessor :foo } }
+        let(:options) { {default: -> { foo.upcase }} }
+
+        it "evaluates in the context of the given instance" do
+          instance.foo = 'whoah'
+          expect(default).to eq('WHOAH')
+        end
       end
     end
   end

@@ -61,4 +61,18 @@ describe Rrod::Model do
       it "lets you use strings with apostrophes in them" 
     end
   end
+
+  describe "defaults" do
+    let(:model)    { Class.new(Car) { attribute :wheels, Integer, default: 4 } }
+    let(:instance) { model.new }
+
+    it "will return the default when reading a nil value" do
+      expect(instance.wheels).to eq 4
+    end
+
+    it "will set the default to the read value" do
+      instance.wheels
+      expect(instance.instance_variable_get(:@attributes)['wheels']).to eq 4
+    end
+  end
 end

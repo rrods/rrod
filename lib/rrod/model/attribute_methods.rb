@@ -38,7 +38,7 @@ module Rrod
       # @param [Symbol, String] the key of the attribute to read
       # @return the attribute at the given key
       def read_attribute(key)
-        @attributes[key.to_s]
+        @attributes[key.to_s] ||= self.class.attributes[key.to_sym].try(:default, self)
       end
       alias :[] :read_attribute
 

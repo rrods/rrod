@@ -25,8 +25,8 @@ module Rrod
       end
 
       # @return [Object] default value or result of call on default value
-      def default
-        @default.respond_to?(:call) ? @default.call : @default
+      def default(instance)
+        @default.respond_to?(:call) ? instance.instance_exec(&@default) : @default
       end
 
       def define
