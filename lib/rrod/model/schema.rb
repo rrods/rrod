@@ -26,9 +26,12 @@ module Rrod
       def rrod_cast(value)
         return       if value.nil?
         return value if value.is_a?(Rrod::Model)
+        raise UncastableObjectError.new("#{value.inspect} cannot be rrod_cast") unless Hash === value
         found(nil, value)
       end
 
     end
+
+    UncastableObjectError = Class.new(StandardError)
   end
 end

@@ -66,4 +66,8 @@ describe Rrod::Model::Schema do
 
   end
 
+  it "raises an UncastableObjectError if object is not castable" do
+    expect { Pet.rrod_cast(Object.new) }.to raise_error(Rrod::Model::UncastableObjectError)
+  end
+
 end

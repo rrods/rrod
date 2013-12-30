@@ -2,10 +2,12 @@ module Rrod
   module Model
     class Collection
       include Enumerable
+      attr_accessor :model
 
       delegate(*%w[clear count each length size], to: :collection)
 
-      def initialize(collection=[])
+      def initialize(model, collection=[])
+        self.model      = model
         self.collection = collection
       end
 
@@ -20,9 +22,14 @@ module Rrod
         @collection ||= []
       end
 
+      def build(attributes={})
+        push attributes
+      end
+
       def push(value)
-        raise InvalidMemberTypeError.new unless Rrod::Model === (value)
-        collection.push(value)
+        instance = model.rrod_cast(value)
+        raise InvalidMemberTypeError.new unless model === instance
+        collection.push(instance)
       end
       alias :<< :push
 
