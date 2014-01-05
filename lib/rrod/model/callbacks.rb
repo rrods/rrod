@@ -5,7 +5,11 @@ module Rrod
 
       included do
         extend ActiveModel::Callbacks
-        define_model_callbacks :validation, :save
+        define_model_callbacks :assignment, :validation, :save
+      end
+
+      def attributes=(*)
+        run_callbacks(:assignment) { super }
       end
 
       def valid?

@@ -8,8 +8,7 @@ module Rrod
       end
 
       def save(options={})
-        options.fetch(:validate, true) ? 
-          (valid? and super()) : super()
+        options.fetch(:validate, true) ? (valid? and super()) : super()
       end
     end
   end

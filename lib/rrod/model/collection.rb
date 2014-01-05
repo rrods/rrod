@@ -4,11 +4,15 @@ module Rrod
       include Enumerable
       attr_accessor :model
 
-      delegate(*%w[clear count each length size], to: :collection)
+      delegate(*%w[clear count each length size []], to: :collection)
 
       def initialize(model, collection=[])
         self.model      = model
         self.collection = collection
+      end
+
+      def _parent=(value)
+        each { |member| member._parent = value }
       end
 
       def collection=(collection)

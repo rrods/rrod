@@ -30,6 +30,7 @@ end
 class Person
   include Rrod::Model
 
+  after_assignment :poke
   before_validation :stuffs
   before_save :other_stuffs
 
@@ -51,5 +52,9 @@ class Person
 
   def other_stuffs
     'moar wooo'
+  end
+
+  def poke
+    'poke'
   end
 end
