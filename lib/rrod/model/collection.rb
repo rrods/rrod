@@ -4,7 +4,10 @@ module Rrod
       include Enumerable
       attr_accessor :model
 
-      delegate(*%w[clear count each length size []], to: :collection)
+      # explicitly declare the public interface to the underlying collection
+      COLLECTION_INTERFACE = %w[clear count each length size [] first last]
+
+      delegate(*COLLECTION_INTERFACE, to: :collection)
 
       def initialize(model, collection=[])
         self.model      = model

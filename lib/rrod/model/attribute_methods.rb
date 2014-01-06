@@ -39,7 +39,8 @@ module Rrod
       # @param [Symbol, String] the key of the attribute to read
       # @return the attribute at the given key
       def read_attribute(key)
-        @attributes[key.to_s] ||= self.class.attributes[key.to_sym].try(:default, self)
+        @attributes[key.to_s] || 
+          write_attribute(key, self.class.attributes[key.to_sym].try(:default, self))
       end
       alias :[] :read_attribute
 
@@ -47,7 +48,9 @@ module Rrod
       # @param [Symbol, String] the key of the attribute to write
       # @param the value to write to attributes
       def write_attribute(key, value)
-        @attributes[key.to_s] = self.class.cast_attribute(key, value).tap { |attr| attr._parent = self if attr.respond_to?(:_parent=) }
+        @attributes[key.to_s] = self.class.cast_attribute(key, value).tap { |attr| 
+          attr._parent = self if attr.respond_to?(:_parent=) 
+        }
       end
       alias :[]= :write_attribute
 
