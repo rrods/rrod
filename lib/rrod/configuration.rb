@@ -38,3 +38,5 @@ module Rrod
     end
   end
 end
+
+I18n.enforce_available_locales = true
