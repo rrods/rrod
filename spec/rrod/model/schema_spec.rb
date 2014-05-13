@@ -70,4 +70,8 @@ describe Rrod::Model::Schema do
     expect { Pet.rrod_cast(Object.new) }.to raise_error(Rrod::Model::UncastableObjectError)
   end
 
+  it "will not add ids to models instantiated via `rrod_cast`" do
+    expect(Pet.rrod_cast(name: 'Molle').attributes).to_not have_key('id')
+  end
+
 end

@@ -45,11 +45,14 @@ module Rrod
       end
 
       def found(key, data, robject=nil)
-        new(data).tap { |instance| 
-          instance.id      = key
+        instantiate(key, data).tap { |instance|
           instance.robject = robject
           instance.instance_variable_set(:@persisted, true)
         }
+      end
+
+      def instantiate(key, data)
+        new(data).tap { |instance| instance.id = key if key }
       end
 
     end
