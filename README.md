@@ -9,7 +9,7 @@ First, you must make sure you
 [have Riak installed](http://docs.basho.com/riak/latest/quickstart/#Install-Riak).
 These guys have extremely good docs and will usually answer your questions 
 in freenode IRC #riak.  You must also make sure you have 
-[enabled search](http://docs.basho.com/riak/latest/ops/advanced/configs/search/) 
+[enabled Secondary Indexing](http://docs.basho.com/riak/latest/ops/advanced/configs/secondary-index/) 
 for your Riak installation.  
 
 ## Rrod Installation
@@ -36,11 +36,16 @@ This will set you up with an pry environment with `Rrod` loaded.
 Next you will wave your magic wand and enter the following incantations:
 
 ```ruby
-Car = Class.new { include Rrod::Model }
-car = Car.new(wheels: 5, color: 'black', make: 'Jeep')
-car.save
-@car = Car.find_first_by make: 'Jeep'
-@car.wheels # => 5
+class Person
+  attribute :name, String,  index: true
+  attribute :age,  Integer, index: true
+end
+
+hank = Person.new(name: "Hank", age: 40)
+hank.save
+
+@hank = Person.find_by name: "Hank"
+@hank.age # => 40
 ```
 
 `Rrod` lets you have arbitrary attributes on your ruby objects and persist and
