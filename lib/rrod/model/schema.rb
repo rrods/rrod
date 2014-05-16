@@ -5,8 +5,22 @@ module Rrod
       def attributes
         @attributes ||= {}
       end
+     
+      def indexes
+        @indexes ||= []
+      end
 
+      def index(name,type = String) 
+        # Todo: allow for 'index :foo, :bar'
+        type = type == String ? "bin" : "int"
+        indexes << {attribute_name:name, type:type} unless indexes.detect{|i| i[:attribute_name] == name}  
+      end
+      
       def attribute(name, type, options={})
+        if options[:index]
+          options.delete(:index)
+          index name, type
+        end
         attributes[name.to_sym] = Attribute.new(self, name, type, options).define
       end
 
