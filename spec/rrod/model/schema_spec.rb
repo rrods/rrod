@@ -78,7 +78,7 @@ describe Rrod::Model::Schema do
     indexes = Person.indexes
     index = indexes.first  
     expect(indexes).to be_an Array
-    expect(index).to be_a Hash
+    expect(index).to be_a Rrod::Model::Index
   end
 
   it "will not add indexes to an attribute if not specified" do

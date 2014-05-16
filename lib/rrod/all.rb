@@ -13,6 +13,7 @@ require 'rrod/version' # first
 require 'rrod/configuration'
 require 'rrod/caster'
 require 'rrod/caster/nested_model'
+require 'rrod/model/index'
 require 'rrod/model/attribute'
 require 'rrod/model/attribute_methods'
 require 'rrod/model/callbacks'

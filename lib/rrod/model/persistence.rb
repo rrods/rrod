@@ -22,9 +22,9 @@ module Rrod
         bucket.enable_index!
         robject.raw_data = to_json
         robject.key = id unless id.nil?
-        self.class.indexes.each{|ind| 
-          index_value = send(ind[:attribute_name]).send(ind[:type] == "int" ? :to_i : :to_s)
-          robject.indexes["#{ind[:attribute_name]}_#{ind[:type]}"] << index_value
+        self.class.indexes.each{|index| 
+          index_value = send(index.name).send(index.type == "int" ? :to_i : :to_s)
+          robject.indexes[index.to_index_string] << index_value
         }
         robject.store
         self.id = robject.key

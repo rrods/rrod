@@ -47,7 +47,8 @@ module Rrod
       def multi_index_fetch(attributes)
         mr = Riak::MapReduce.new(client)  
         attributes.to_a.each do |ind| 
-          ind = retrieve_index(ind) 
+          ind = retrieve_index(ind)
+          return if ind.nil? 
           mr.index client[bucket_name], ind[:index_name], ind[:value] 
         end
         find_many(mr.run.collect{|res| res.last})
@@ -56,11 +57,13 @@ module Rrod
       def retrieve_index(attributes)
         field,val = attributes.flatten
         index_list = indexes
-        index_hash = Hash[*index_list.select{|ind| ind[:attribute_name] == field}]
-        {index_name: "#{index_hash[:attribute_name]}_#{index_hash[:type]}", value: val}  
+        index_found = index_list.select{|ind| ind.name == field.to_sym}.first
+        return nil unless index_found
+        {index_name: index_found.to_index_string, value: val} 
       end
       
       def find_by_index(opt)
+        raise NotFound.new if opt.nil?
         client[bucket_name].get_index opt[:index_name], opt[:value]
       rescue Riak::FailedRequest => e
         raise NotFound.new 

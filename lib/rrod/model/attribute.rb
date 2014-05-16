@@ -10,7 +10,7 @@ module Rrod
         ->(value) { write_attribute name, value }
       end
        
-      attr_accessor :model, :name, :type, :options, :default
+      attr_accessor :model, :name, :type, :options, :default, :index
 
       # @param [Class] The class that is declaring the attribute
       # @param [Symbol] The name of the attribute
@@ -21,7 +21,9 @@ module Rrod
         self.name    = name.to_sym
         self.type    = type
         self.default = options.delete(:default)
+        self.index   = options.delete(:index)
         self.options = options
+        add_index if self.index
       end
 
       # @return [Object] default value or result of call on default value
@@ -62,6 +64,10 @@ module Rrod
 
       def define_writer
         model.send :define_method, "#{name}=", self.class.writer_definition(name)
+      end
+      
+      def add_index
+        model.indexes << Index.new(self.name,self.type)
       end
 
       def apply_validators
