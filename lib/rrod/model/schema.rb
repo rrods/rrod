@@ -10,10 +10,14 @@ module Rrod
         @indexes ||= []
       end
 
-      def index(name,type = String) 
-        # Todo: allow for 'index :foo, :bar'
-        type = type == String ? "bin" : "int"
-        indexes << {attribute_name:name, type:type} unless indexes.detect{|i| i[:attribute_name] == name}  
+      def index(name,type = String, *args) 
+        fields = [name] 
+        unless type.is_a? Class
+          fields << type << args
+          fields.flatten.each {|field| add_index_and_fetch_type(field) }
+        else
+          add_index(fields.first, type)
+        end
       end
       
       def attribute(name, type, options={})
@@ -42,6 +46,20 @@ module Rrod
         return value if value.is_a?(Rrod::Model)
         raise UncastableObjectError.new("#{value.inspect} cannot be rrod_cast") unless Hash === value
         instantiate(nil, value)
+      end
+       
+      private
+      
+      # TODO: Use this to fetch the type 
+      def add_index_and_fetch_type(field)
+        add_index field, attributes[field].type
+      end
+      
+      def add_index(name, type)
+        type = type == String ? "bin" : "int"                                                                                                                
+        unless indexes.detect{|index| index[:attribute_name] == name}
+          indexes << {attribute_name: name, type: type}
+        end
       end
 
     end
