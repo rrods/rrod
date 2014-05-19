@@ -17,15 +17,18 @@ module Rrod
       def save
         persist
       end
+ 
+      def indexes
+        self.class.indexes.inject({}) do |acc, index|
+          acc.tap { |hash| hash[index.name] = [index.cast(self)] }
+        end
+      end
 
       def persist
         bucket.enable_index!
         robject.raw_data = to_json
         robject.key = id unless id.nil?
-        self.class.indexes.each{|index| 
-          index_value = send(index.name).send(index.type == "int" ? :to_i : :to_s)
-          robject.indexes[index.to_index_string] << index_value
-        }
+        robject.indexes.merge!(indexes)
         robject.store
         self.id = robject.key
         @persisted = true

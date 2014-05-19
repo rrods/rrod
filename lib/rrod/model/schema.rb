@@ -7,12 +7,7 @@ module Rrod
       end
      
       def indexes
-        @indexes ||= []
-      end
-
-      def index(name,type = String) 
-        index_found = indexes.select{|ind| ind.name == name.to_sym}.first
-        index_found.type = type
+        attributes.values.map(&:index).compact  
       end
       
       def attribute(name, type, options={})

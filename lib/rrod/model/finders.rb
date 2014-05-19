@@ -18,16 +18,12 @@ module Rrod
       end
 
       def find_by(attributes)
-        begin
-          find_by!(attributes)
-        rescue Rrod::Model::NotFound  
-          nil
-        end     
+        find_by!(attributes) rescue nil
       end
  
-      def find_by!(attributes)
-        return find(attributes[:id]) if attributes[:id]
-        find(find_by_index(retrieve_index(attributes)).first)
+      def find_by!(query)
+        return find(query[:id]) if query[:id]
+        find(find_by_index(query).first)
       end
       
       def search(attributes)
@@ -36,41 +32,37 @@ module Rrod
         []   
       end
 
-      def search!(attributes)
-        raise ArgumentError.new("Cannot search by id") if attributes[:id]  
-        return multi_index_fetch(attributes) if attributes.length > 1 
-        find_many(find_by_index(retrieve_index(attributes)))
+      def search!(query)
+        raise ArgumentError.new("Cannot search by id") if query[:id]  
+        return multi_index_fetch(query) if query.length > 1 
+        find_many(find_by_index(query))
       end
         
       private 
       
-      def multi_index_fetch(attributes)
+      def multi_index_fetch(query)
         mr = Riak::MapReduce.new(client)  
-        attributes.to_a.each do |ind| 
-          ind = retrieve_index(ind)
-          return if ind.nil? 
-          mr.index client[bucket_name], ind[:index_name], ind[:value] 
+        query.to_a.each do |q| 
+          field, value = q.flatten.to_a
+          attr = attributes[field] 
+          raise ArgumentError.new("No index found for #{field}. Add 'index: true' to attribute definition") unless attr && attr.index 
+          mr.index client[bucket_name], attr.index.name, value 
         end
         find_many(mr.run.collect{|res| res.last})
       end
 
-      def retrieve_index(attributes)
-        field,val = attributes.flatten
-        index_list = indexes
-        index_found = index_list.select{|ind| ind.name == field.to_sym}.first
-        return nil unless index_found
-        {index_name: index_found.to_index_string, value: val} 
-      end
-      
-      def find_by_index(opt)
-        raise NotFound.new if opt.nil?
-        client[bucket_name].get_index opt[:index_name], opt[:value]
+      def find_by_index(query)
+        raise NotFound.new if query.blank?
+        field, term = query.flatten.to_a
+        attr = attributes[field]
+        raise NotFound.new unless attr && attr.index
+        bucket.get_index attr.index.name, term
       rescue Riak::FailedRequest => e
         raise NotFound.new 
       end
 
       def find_many(ids)  
-        client[bucket_name].get_many(ids).map{|doc| found(nil, doc.last.data) }
+        bucket.get_many(ids).map{|doc| found(doc.first, doc.last.data) }
       end
 
       def found(key, data, robject=nil)

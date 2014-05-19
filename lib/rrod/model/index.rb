@@ -2,18 +2,26 @@ module Rrod
   module Model
     class Index
    
-      attr_accessor :name, :type
+      attr_accessor :attr
    
-      def initialize(name,type)
-        @type = type == String ? "bin" : "int"
-        @name = name 
+      def initialize(attr, name = nil)
+        @attr = attr
+        @name = name || attr.name 
       end
 
-      def to_index_string
-        "#{@name}_#{@type}"
+      def name
+        "#{@name}_#{type}"
       end   
+ 
+      def type
+        attr.type == String ? "bin" : "int"
+      end
+     
+      def cast(model)
+        meth = type == "bin" ? :to_s : :to_i
+        model.send(@attr.name).send(meth)
+      end
 
     end
-
   end
 end

@@ -21,9 +21,8 @@ module Rrod
         self.name    = name.to_sym
         self.type    = type
         self.default = options.delete(:default)
-        self.index   = options.delete(:index)
         self.options = options
-        add_index if self.index
+        set_index if options.delete(:index)
       end
 
       # @return [Object] default value or result of call on default value
@@ -66,8 +65,8 @@ module Rrod
         model.send :define_method, "#{name}=", self.class.writer_definition(name)
       end
       
-      def add_index
-        model.indexes << Index.new(self.name,self.type)
+      def set_index
+        @index = Index.new(self)
       end
 
       def apply_validators
