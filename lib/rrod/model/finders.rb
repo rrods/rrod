@@ -17,8 +17,8 @@ module Rrod
         raise e unless e.not_found?
       end
 
-      def find_by(attributes)
-        find_by!(attributes) rescue nil
+      def find_by(query)
+        find_by!(query) rescue nil
       end
  
       def find_by!(query)
@@ -26,8 +26,8 @@ module Rrod
         find(find_by_index(query).first)
       end
       
-      def search(attributes)
-        search!(attributes)
+      def search(query)
+        search!(query)
       rescue Rrod::Model::NotFound
         []   
       end
