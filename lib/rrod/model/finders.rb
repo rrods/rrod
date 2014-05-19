@@ -18,7 +18,9 @@ module Rrod
       end
 
       def find_by(query)
-        find_by!(query) rescue nil
+        find_by!(query) 
+      rescue Rrod::Model::NotFound
+        nil
       end
  
       def find_by!(query)
@@ -34,29 +36,33 @@ module Rrod
 
       def search!(query)
         raise ArgumentError.new("Cannot search by id") if query[:id]  
-        return multi_index_fetch(query) if query.length > 1 
+        return mapred_index_fetch(query) if query.length > 1 
         find_many(find_by_index(query))
       end
         
       private 
       
-      def multi_index_fetch(query)
+      def find_index(field)
+        attr = attributes[field]
+        raise ArgumentError.new unless attr && attr.index
+        attr.index
+      end
+
+      def mapred_index_fetch(query)
         mr = Riak::MapReduce.new(client)  
-        query.to_a.each do |q| 
-          field, value = q.flatten.to_a
-          attr = attributes[field] 
-          raise ArgumentError.new("No index found for #{field}. Add 'index: true' to attribute definition") unless attr && attr.index 
-          mr.index client[bucket_name], attr.index.name, value 
+        query.each do |qr|
+          field, value = qr
+          index = find_index(field)
+          mr.index bucket, index.name, value 
         end
         find_many(mr.run.collect{|res| res.last})
       end
 
       def find_by_index(query)
         raise NotFound.new if query.blank?
-        field, term = query.flatten.to_a
-        attr = attributes[field]
-        raise NotFound.new unless attr && attr.index
-        bucket.get_index attr.index.name, term
+        field, term = query.first
+        index = find_index(field)
+        bucket.get_index index.name, term
       rescue Riak::FailedRequest => e
         raise NotFound.new 
       end

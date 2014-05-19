@@ -13,15 +13,16 @@ module Rrod
         "#{@name}_#{type}"
       end   
  
+      def cast(model)
+        cast_method = type == "bin" ? :to_s : :to_i
+        model.send(@attr.name).send(cast_method)
+      end
+    
+      private
+      
       def type
         attr.type == String ? "bin" : "int"
-      end
-     
-      def cast(model)
-        meth = type == "bin" ? :to_s : :to_i
-        model.send(@attr.name).send(meth)
-      end
-
+      end      
     end
   end
 end

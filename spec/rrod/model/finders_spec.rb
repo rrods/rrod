@@ -49,7 +49,7 @@ describe Rrod::Model::Finders, integration: true do
       end
 
       it "will raise an exception if one can't be found with a !" do
-        expect { model.find_by! zombies: true }.to raise_error(Rrod::Model::NotFound)
+        expect { model.find_by! zombies: true }.to raise_error(ArgumentError)
       end
     end
 
@@ -66,12 +66,12 @@ describe Rrod::Model::Finders, integration: true do
         expect {model.search(id: instance.id)}.to raise_error(ArgumentError)
       end
 
-      it "will return [] if none can be found" do
-        expect(model.search zombies: 'yes plz').to eq []
+      it "will return an exeception if none can be found" do
+        expect { model.search zombies: 'yes plz'}.to raise_error(ArgumentError)
       end
 
       it "will raise an exception if none can be found with a !" do
-        expect { model.search! brains: :none }.to raise_error(Rrod::Model::NotFound)
+        expect { model.search! brains: :none }.to raise_error(ArgumentError)
       end
     end
   end
