@@ -31,48 +31,49 @@ describe Rrod::Model::Finders, integration: true do
   end
 
   describe "finding by attributes in the hash" do
-    describe "find_first_by" do
+    describe "find_by" do
       it "can find one" do
-        found = model.find_first_by(make: 'Jeep')
+        found = model.find_by(make: 'Jeep')
         expect(found).to be_a model 
         expect(found.make).to eq "Jeep"
       end
 
       it "will work properly when finding by id" do
-        found = model.find_first_by(id: instance.id)
+        found = model.find_by(id: instance.id)
         expect(found).to be_a model
       end
 
       it "will return nil if one can't be found" do
-        found = model.find_first_by(id: "id that is not there")
+        found = model.find_by(id: "id that is not there")
         expect(found).to be nil
       end
 
       it "will raise an exception if one can't be found with a !" do
-        expect { model.find_first_by! zombies: true }.to raise_error(Rrod::Model::NotFound)
+        expect { model.find_by! zombies: true }.to raise_error(ArgumentError)
       end
     end
 
-    describe "find_all_by" do
+    describe "search" do
       it "can find all" do
-        founds = model.find_all_by(make: 'Jeep', wheels: 4)
+        founds = model.search(make: 'Jeep', wheels: 4)
         found = founds.first
         expect(founds).to be_an Array
         expect(found).to be_a model 
         expect(found.make).to eq "Jeep"
       end
 
-      it "will raise an exception if finding all by id" do
-        expect {model.find_all_by(id: instance.id)}.to raise_error(ArgumentError)
+      it "will raise an exception if searching by id" do
+        expect {model.search(id: instance.id)}.to raise_error(ArgumentError)
       end
 
-      it "will return [] if none can be found" do
-        expect(model.find_all_by zombies: 'yes plz').to eq []
+      it "will return an exeception if none can be found" do
+        expect { model.search zombies: 'yes plz'}.to raise_error(ArgumentError)
       end
 
       it "will raise an exception if none can be found with a !" do
-        expect { model.find_all_by! brains: :none }.to raise_error(Rrod::Model::NotFound)
+        expect { model.search! brains: :none }.to raise_error(ArgumentError)
       end
     end
   end
+
 end

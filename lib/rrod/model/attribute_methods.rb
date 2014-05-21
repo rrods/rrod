@@ -76,7 +76,6 @@ module Rrod
       def method_missing(method_id, *args, &block)
         method = method_id.to_s
         return super unless magic_methods.include?(method)
-
         accessor = method.ends_with?('=') ? :writer : :reader
         send "define_singleton_#{accessor}", method.chomp('=')
         send method_id, *args

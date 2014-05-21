@@ -5,7 +5,11 @@ module Rrod
       def attributes
         @attributes ||= {}
       end
-
+     
+      def indexes
+        attributes.values.map(&:index).compact  
+      end
+      
       def attribute(name, type, options={})
         attributes[name.to_sym] = Attribute.new(self, name, type, options).define
       end
@@ -30,8 +34,7 @@ module Rrod
         instantiate(nil, value)
       end
 
-    end
-
+    end           
     UncastableObjectError = Class.new(StandardError)
   end
 end
