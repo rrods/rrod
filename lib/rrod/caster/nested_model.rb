@@ -8,7 +8,7 @@ module Rrod
       end
 
       def model
-        first
+        self.is_a?(Hash) ? self.first.last : first
       end
 
     end

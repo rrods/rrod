@@ -13,7 +13,7 @@ module Rrod
     module ClassMethods
       include Finders
       include Schema
-
+        
       def client
         Rrod.configuration.client
       end

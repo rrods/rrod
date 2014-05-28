@@ -5,7 +5,7 @@ module Rrod
       attr_accessor :model
 
       # explicitly declare the public interface to the underlying collection
-      COLLECTION_INTERFACE = %w[clear count each length size [] first last]
+      COLLECTION_INTERFACE = %w[clear count each length size first last]
 
       delegate(*COLLECTION_INTERFACE, to: :collection)
 
@@ -16,6 +16,11 @@ module Rrod
 
       def _parent=(value)
         each { |member| member._parent = value }
+      end
+
+      def[](key) 
+        return collection[key] if (collection && !model.respond_to?(:lookup_field))
+        collection.select{|ele| ele.send(model.lookup_field) == key}
       end
 
       def collection=(collection)

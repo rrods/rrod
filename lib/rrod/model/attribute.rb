@@ -50,10 +50,12 @@ module Rrod
 
       def type=(value)
         @type = value
+        set_lookup_field if type.is_a? Hash
         @type.extend(Rrod::Caster::NestedModel) if nested_model?
       end
 
       def nested_model?
+        return true if type.is_a?(Hash) && type.first.last && type.first.last.ancestors.include?(Rrod::Model)
         type.is_a?(Array) and type.first.ancestors.include?(Rrod::Model)
       end
 
@@ -68,7 +70,11 @@ module Rrod
       def set_index
         @index = Index.new(self)
       end
-
+      
+      def set_lookup_field 
+        type.first.last.lookup_field = type.first.first
+      end
+  
       def apply_validators
         model.validates name, options if options.present?
       end

@@ -2,6 +2,8 @@ module Rrod
   module Model
     module Schema
 
+      attr_accessor :lookup_field
+
       def attributes
         @attributes ||= {}
       end

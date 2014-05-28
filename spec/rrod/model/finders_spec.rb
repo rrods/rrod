@@ -4,7 +4,7 @@ require 'support/models/car'
 describe Rrod::Model::Finders, integration: true do
 
   let(:model) { Car }
-  let(:hash)  { {wheels: 4, color: :black, make: 'Jeep'} }
+  let(:hash)  { {wheels: 4, color: :black, make: 'Jeep', accessories: [{name: "vroom"}] }}
   let(:instance) { model.new(hash) }
 
   before :each do
@@ -52,7 +52,7 @@ describe Rrod::Model::Finders, integration: true do
         expect { model.find_by! zombies: true }.to raise_error(ArgumentError)
       end
     end
-
+ 
     describe "search" do
       it "can find all" do
         founds = model.search(make: 'Jeep', wheels: 4)
@@ -73,7 +73,27 @@ describe Rrod::Model::Finders, integration: true do
       it "will raise an exception if none can be found with a !" do
         expect { model.search! brains: :none }.to raise_error(ArgumentError)
       end
-    end
-  end
 
+    end
+ 
+    describe "finding nested models by []" do
+
+      it "will return the subset of nested models" do
+        results = model.find(instance.id).accessories[:vroom]
+        accessory = results.first
+        expect(results).to be_an Array
+        expect(accessory).to be_a Accessory
+        expect(accessory.name).to eql("vroom")
+      end
+
+      it "will return [] with no results" do
+        results = model.find(instance.id).accessories[:robin]
+        expect(results).to be_empty
+      end
+
+    end
+
+
+
+  end
 end
