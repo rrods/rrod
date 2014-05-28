@@ -19,7 +19,7 @@ module Rrod
       end
 
       def[](key) 
-        return collection[key] if (collection && !model.respond_to?(:lookup_field))
+        return collection[key] if collection && model.lookup_field.blank?
         collection.select{|ele| ele.send(model.lookup_field) == key}
       end
 
