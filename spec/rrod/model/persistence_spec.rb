@@ -39,5 +39,18 @@ describe Rrod::Model::Persistence, integration: true do
         expect(instance.id).not_to be_nil
       end
     end
+
+    describe "update models" do
+      before :each do
+        instance.save
+      end
+
+      it "updates attributes" do 
+        instance.update wheels: 6
+        expect(instance.wheels).to eq 6
+      end
+
+
+    end
   end
 end
