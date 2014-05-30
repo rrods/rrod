@@ -17,6 +17,12 @@ module Rrod
       def save
         persist
       end
+
+      def update(attributes)
+        self.attributes = attributes
+        save
+      end
+      alias :update_attributes :update
  
       def indexes
         self.class.indexes.inject({}) do |acc, index|
