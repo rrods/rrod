@@ -9,6 +9,13 @@ module Rrod
       def self.writer_definition(name)
         ->(value) { write_attribute name, value }
       end
+
+      def self.presence_definition(name)
+        -> { 
+          value = read_attribute(name)
+          !value.nil? && !(value.respond_to?(:empty?) && value.empty?) 
+        }
+      end
        
       attr_accessor :model, :name, :type, :options, :default, :index
 
@@ -33,6 +40,7 @@ module Rrod
       def define
         define_reader
         define_writer
+        define_presence
         apply_validators
         self
       end
@@ -63,6 +71,10 @@ module Rrod
 
       def define_writer
         model.send :define_method, "#{name}=", self.class.writer_definition(name)
+      end
+
+      def define_presence
+        model.send :define_method, "#{name}?", self.class.presence_definition(name)
       end
       
       def set_index

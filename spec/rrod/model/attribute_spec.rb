@@ -73,6 +73,12 @@ describe Rrod::Model::Attribute do
         expect(instance).to respond_to("#{name}=")
       end
     end
+
+    describe "presence" do
+      it "checks for presence" do
+        expect(instance).to respond_to("#{name}?")
+      end
+    end
   end
 
   describe "casting" do
