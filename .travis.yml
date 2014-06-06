@@ -8,7 +8,8 @@ services:
 before_install:
   - sudo service riak start
 before_script:
-  - ! 'echo "root: .riaktest" > spec/support/test_server.yml'
-  - ! 'echo "source: /usr/sbin" >> spec/support/test_server.yml'
+  - touch spec/support/test_server.yml
+  - echo "root: .riaktest" > spec/support/test_server.yml'
+  - echo "source: /usr/sbin" >> spec/support/test_server.yml
   - "ulimit -n 2048"
 script: bundle exec rspec spec
