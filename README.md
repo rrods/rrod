@@ -1,5 +1,5 @@
 <!--- TODO use consistent capitalization with Rrod and Riak as well as backticks-->
-[![Build Status](https://travis-ci.org/rrods/rrod.png?branch=master)](https://travis-ci.org/rrods/rrod)
+[![Build Status](https://travis-ci.org/rrods/rrod.svg?branch=master)](https://travis-ci.org/rrods/rrod)
 # Rrod
 ### Riak ruby object database.
 Rrod lets you use the super awesome database, riak, to model and persist your
