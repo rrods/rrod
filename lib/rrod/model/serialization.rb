@@ -11,6 +11,10 @@ module Rrod
         value = read_attribute(key)
         value.respond_to?(:serializable_hash) ? value.serializable_hash : value
       end
+     
+      def to_json
+       MultiJson.dump serializable_hash 
+      end
 
     end
   end
