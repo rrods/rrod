@@ -43,6 +43,10 @@ module Rrod
       def serializable_hash(*)
         collection.map(&:serializable_hash)
       end
+      
+      def valid?
+        collection.all?{|c| c.valid? }
+      end
 
       InvalidCollectionTypeError = Class.new(StandardError)
       InvalidMemberTypeError     = Class.new(StandardError)
