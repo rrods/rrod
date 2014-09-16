@@ -45,7 +45,7 @@ module Rrod
       end
       
       def valid?
-        collection.all?{|c| c.valid? }
+        collection.all?(&:valid?)
       end
 
       InvalidCollectionTypeError = Class.new(StandardError)

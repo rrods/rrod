@@ -15,30 +15,31 @@ describe Rrod::Model::Validations::AssociatedValidator do
     end
 
     it 'is invalid when the associated records are invalid' do
-      arod.should_not be_valid
-      joeschmo.should_not be_valid
-      team.should_not be_valid
+      expect(arod.valid?).to be false
+      expect(joeschmo.valid?).to be false
+      expect(team.valid?).to be false
     end
  
     it 'includes the associated records validation error messages in the error message' do 
       team.valid?
-      team.errors[:players].size.should == 1
+      expect(team.errors[:players].size).to be 1
       # maybe change this to better error messages
-      team.errors[:players].first.should == "Name can't be blank"
+      error_message = team.errors[:players].first
+      expect(error_message).to eq "Name can't be blank; Name can't be blank and Position can't be blank"
     end  
 
  
     it 'is valid when the associated records are valid' do
-      ichiro.should be_valid
+      expect(ichiro.valid?).to be true
       
       arod.name = 'Alex Rodriguez'
-      arod.should be_valid
+      expect(arod.valid?).to be true
       
       joeschmo.name = 'Joe Schmo' 
       joeschmo.position = 'C'
-      joeschmo.should be_valid
+      expect(joeschmo.valid?).to be true
   
-      team.should be_valid
+      expect(team.valid?).to be true
     end
 
   end

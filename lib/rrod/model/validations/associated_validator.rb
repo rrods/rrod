@@ -4,7 +4,7 @@ module Rrod
       
       class AssociatedValidator < ActiveModel::EachValidator
         def validate_each(record, attribute, value)
-          return if (value.is_a?(Array) ? value : [value]).collect{ |r| r.nil? || r.valid? }.all?
+          return if Array(value).collect{ |r| r.nil? || r.valid? }.all?
           record.errors.add(attribute, error_message_for(attribute, value))
         end
 
