@@ -20,7 +20,7 @@ describe Rrod::Model::Schema do
   end
 
   it "is using a schema if an attribute is declared" do
-    expect(Person.schema?).to be_true
+    expect(Person.schema?).to be_truthy
   end
 
   describe "associations", integration: true do

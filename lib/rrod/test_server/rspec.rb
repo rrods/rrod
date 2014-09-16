@@ -18,7 +18,7 @@ module Rrod
               fail "Test server not working: #{Rrod::TestServer.fatal}" 
             end
 
-            if example.metadata[:test_server] == false
+            if ::RSpec.current_example.metadata[:test_server] == false
               Rrod::TestServer.stop
             else
               Rrod::TestServer.create unless Rrod::TestServer.exist?
@@ -32,9 +32,10 @@ module Rrod
 
           config.after(:each, :integration => true) do
             # i really don't understand this...
+            # well the 'example' needs to be accessed another way, Rspec.current_example.
             if !Rrod::TestServer.fatal && 
               Rrod::TestServer.started? && 
-              example.metadata[:test_server] != false
+              ::RSpec.current_example.metadata[:test_server] != false
               Rrod::TestServer.drop
             end
           end
