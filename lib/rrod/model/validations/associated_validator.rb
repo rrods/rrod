@@ -20,7 +20,7 @@ module Rrod
             record_errors.flatten!
             record_errors.join('; ')
           else
-            associated_record.errrors.full_messages.to_sentence
+            associated_records.errors.full_messages.to_sentence
           end
         end
       end
