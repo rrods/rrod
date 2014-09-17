@@ -12,10 +12,7 @@ module Rrod
    
         def error_message_for(attribute, associated_records) 
           if associated_records.respond_to?(:each_with_index)
-            associated_records.enum_for(:each_with_index).collect do |record, index|
-              next unless record.errors.any?
-              record.errors.full_messages.to_sentence
-            end.compact.flatten.join('; ')
+            associated_records.map(&:errors).reject(&:blank?).map(&:full_messages).map(&:to_sentence).flatten.join('; ')
           else
             associated_records.errors.full_messages.to_sentence 
           end
