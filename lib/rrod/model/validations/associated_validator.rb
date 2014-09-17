@@ -10,19 +10,10 @@ module Rrod
 
         private
    
-        def error_message_for(attribute, associated_records)
-          if associated_records.respond_to?(:each_with_index)
-            record_errors = associated_records.enum_for(:each_with_index).collect do |record, index|
-              next unless record.errors.any?
-              record.errors.full_messages.to_sentence
-            end
-            record_errors.compact!
-            record_errors.flatten!
-            record_errors.join('; ')
-          else
-            associated_records.errors.full_messages.to_sentence
-          end
+        def error_message_for(attribute, associated_records) 
+          Array(associated_records).map(&:errors).reject(&:blank?).map(&:full_messages).map(&:to_sentence).flatten.join('; ')
         end
+
       end
      
       module ClassMethods 
