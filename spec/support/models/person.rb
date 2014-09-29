@@ -36,8 +36,8 @@ class Person
   before_create :created!
   before_update :updated!
 
-  attribute :name,    String,  index: true, presence: true
-  attribute :age,     Integer, index: true, numericality: {min: 10}
+  attribute :name,    String,  presence: true
+  attribute :age,     Integer, numericality: {min: 10}
   attribute :gender,  Symbol
 
   attribute :address, Address

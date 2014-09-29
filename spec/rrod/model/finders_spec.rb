@@ -55,7 +55,7 @@ describe Rrod::Model::Finders, integration: true do
 
     describe "search" do
       it "can find all" do
-        founds = model.search(make: 'Jeep', wheels: 4)
+        founds = model.find_all_by(make: 'Jeep', wheels: 4)
         found = founds.first
         expect(founds).to be_an Array
         expect(found).to be_a model 
@@ -63,15 +63,15 @@ describe Rrod::Model::Finders, integration: true do
       end
 
       it "will raise an exception if searching by id" do
-        expect {model.search(id: instance.id)}.to raise_error(ArgumentError)
+        expect {model.find_all_by(id: instance.id)}.to raise_error(ArgumentError)
       end
 
       it "will return an exeception if none can be found" do
-        expect { model.search zombies: 'yes plz'}.to raise_error(ArgumentError)
+        expect { model.find_all_by zombies: 'yes plz'}.to raise_error(ArgumentError)
       end
 
       it "will raise an exception if none can be found with a !" do
-        expect { model.search! brains: :none }.to raise_error(ArgumentError)
+        expect { model.find_all_by! brains: :none }.to raise_error(ArgumentError)
       end
     end
   end

@@ -25,46 +25,27 @@ module Rrod
  
       def find_by!(query)
         return find(query[:id]) if query[:id]
-        find(find_by_index(query).first)
+        find_all_by!(query).first
       end
       
-      def search(query)
-        search!(query)
+      def find_all_by(query)
+        find_all_by!(query)
       rescue Rrod::Model::NotFound
         []   
       end
 
-      def search!(query)
-        raise ArgumentError.new("Cannot search by id") if query[:id]  
-        return mapred_index_fetch(query) if query.length > 1 
-        find_many(find_by_index(query))
+      def find_all_by!(attributes)
+        query = Query.new(attributes)
+        raise ArgumentError.new("Cannot search by id") if query.using_id?
+        search(query).map{ |doc| found(nil, doc) } 
       end
         
       private 
-      
-      def find_index(field)
-        attr = attributes[field]
-        raise ArgumentError.new unless attr && attr.index
-        attr.index
-      end
-
-      def mapred_index_fetch(query)
-        mr = Riak::MapReduce.new(client)  
-        query.each do |qr|
-          field, value = qr
-          index = find_index(field)
-          mr.index bucket, index.name, value 
-        end
-        find_many(mr.run.collect{|res| res.last})
-      end
-
-      def find_by_index(query)
-        raise NotFound.new if query.blank?
-        field, term = query.first
-        index = find_index(field)
-        bucket.get_index index.name, term
-      rescue Riak::FailedRequest => e
-        raise NotFound.new 
+  
+      def search(query)
+        records = client.search(bucket_name, query.to_s)['docs']
+        raise ArgumentError.new("NO RES ULTS") unless records.any?
+        records
       end
 
       def find_many(ids)  

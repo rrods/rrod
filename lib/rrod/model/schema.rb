@@ -6,10 +6,6 @@ module Rrod
         @attributes ||= {}
       end
      
-      def indexes
-        attributes.values.map(&:index).compact  
-      end
-      
       def attribute(name, type, options={})
         attributes[name.to_sym] = Attribute.new(self, name, type, options).define
       end
