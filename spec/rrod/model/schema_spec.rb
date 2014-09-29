@@ -74,17 +74,4 @@ describe Rrod::Model::Schema do
     expect(Pet.rrod_cast(name: 'Molle').attributes).to_not have_key('id')
   end
 
-  it "will add an index to an attribute if specified" do
-    indexes = Person.indexes
-    index = indexes.first  
-    expect(indexes).to be_an Array
-    expect(index).to be_a Rrod::Model::Index
-  end
-
-  it "will not add indexes to an attribute if not specified" do
-    indexes = Pet.indexes
-    expect(indexes).to be_an Array
-    expect(indexes).to be_empty
-  end
-
 end
