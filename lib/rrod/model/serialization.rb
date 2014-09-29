@@ -12,8 +12,8 @@ module Rrod
         value.respond_to?(:serializable_hash) ? value.serializable_hash : value
       end
      
-      def to_json
-       MultiJson.dump serializable_hash 
+      def to_json(options={})
+        MultiJson.dump serializable_hash(options) 
       end
 
     end
