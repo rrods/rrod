@@ -44,7 +44,7 @@ module Rrod
   
       def search(query)
         records = client.search(bucket_name, query.to_s)['docs']
-        raise ArgumentError.new("NO RES ULTS") unless records.any?
+        raise NotFound.new unless records.any?
         records
       end
 
