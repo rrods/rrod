@@ -5,14 +5,14 @@ module Rrod
       @casting = casting
     end
 
-    def rrod_cast(value)
+    def rrod_cast(value, model = nil)
       return if value.nil?
-      @casting.(value)
+      @casting.(value, model)
     end
             
     module Boolean
       extend self
-      def rrod_cast(value)
+      def rrod_cast(value, model = nil)
         [nil, false, 'false', 0, '0'].include?(value) ? false : true
       end
     end

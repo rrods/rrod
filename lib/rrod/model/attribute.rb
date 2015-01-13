@@ -39,7 +39,7 @@ module Rrod
 
       def cast(value)
         caster = type.respond_to?(:rrod_cast) ? type : rrod_caster
-        caster ? caster.rrod_cast(value) : value
+        caster ? caster.rrod_cast(value, model) : value
       end
 
       private
