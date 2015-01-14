@@ -30,7 +30,7 @@ module Rrod
       end
 
       def build(attributes={})
-        push attributes
+        push(attributes).last
       end
 
       def push(value)

@@ -20,6 +20,11 @@ describe Rrod::Model::Collection do
         expect(collection.collection.length).to eq 2
         expect(collection.collection.last.name).to eq('Lion')
       end
+
+      it "returns the built object" do
+        object = collection.build(name: 'Molle')
+        expect(object).to be_a(Pet)
+      end
     end
 
 
