@@ -64,6 +64,14 @@ describe Rrod::Model::Schema do
       expect(instance.pets.first.owner).to eq(instance)
     end
 
+    it "returns an empty collection when referencing an empty association" do
+      expect(instance.pets).to be_empty
+    end
+
+    it "allows building a nested model on an empty collection" do
+      expect { instance.pets.build(name: 'Molle') }.not_to raise_error
+    end
+
   end
 
   it "raises an UncastableObjectError if object is not castable" do
