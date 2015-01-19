@@ -5,7 +5,7 @@ module Rrod
 
       included do
         extend ActiveModel::Callbacks
-        define_model_callbacks :assignment, :validation, :save
+        define_model_callbacks :assignment, :validation, :save, :create, :update
       end
 
       def attributes=(*)
@@ -17,6 +17,8 @@ module Rrod
       end
 
       def save(*)
+        run_callbacks(:create) if new?
+        run_callbacks(:update) if persisted?
         run_callbacks(:save) { super }
       end
     end

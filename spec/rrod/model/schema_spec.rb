@@ -20,7 +20,7 @@ describe Rrod::Model::Schema do
   end
 
   it "is using a schema if an attribute is declared" do
-    expect(Person.schema?).to be_true
+    expect(Person.schema?).to be_truthy
   end
 
   describe "associations", integration: true do
@@ -64,6 +64,14 @@ describe Rrod::Model::Schema do
       expect(instance.pets.first.owner).to eq(instance)
     end
 
+    it "returns an empty collection when referencing an empty association" do
+      expect(instance.pets).to be_empty
+    end
+
+    it "allows building a nested model on an empty collection" do
+      expect { instance.pets.build(name: 'Molle') }.not_to raise_error
+    end
+
   end
 
   it "raises an UncastableObjectError if object is not castable" do
@@ -72,19 +80,6 @@ describe Rrod::Model::Schema do
 
   it "will not add ids to models instantiated via `rrod_cast`" do
     expect(Pet.rrod_cast(name: 'Molle').attributes).to_not have_key('id')
-  end
-
-  it "will add an index to an attribute if specified" do
-    indexes = Person.indexes
-    index = indexes.first  
-    expect(indexes).to be_an Array
-    expect(index).to be_a Rrod::Model::Index
-  end
-
-  it "will not add indexes to an attribute if not specified" do
-    indexes = Pet.indexes
-    expect(indexes).to be_an Array
-    expect(indexes).to be_empty
   end
 
 end

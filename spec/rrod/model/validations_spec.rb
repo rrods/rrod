@@ -7,11 +7,11 @@ describe Rrod::Model::Validations do
   let(:instance)   { klass.new }
 
   it "adds validations as class methods" do
-    expect(validators.any? { |v| ActiveModel::Validations::LengthValidator === v }).to be_true
+    expect(validators.any? { |v| ActiveModel::Validations::LengthValidator === v }).to be_truthy
   end
 
   it "allows describing validations in the attribute" do
-    expect(validators.any? { |v| ActiveModel::Validations::PresenceValidator === v }).to be_true
+    expect(validators.any? { |v| ActiveModel::Validations::PresenceValidator === v }).to be_truthy
   end
 
   it "raises a no method error if no validation exists" do
@@ -34,7 +34,7 @@ describe Rrod::Model::Validations do
   end
 
   it "will return false from saving if invalid" do
-    expect(instance.save).to be_false
+    expect(instance.save).to be_falsey
   end
 
   it "sets up errors properlies" do
@@ -43,6 +43,6 @@ describe Rrod::Model::Validations do
   end
 
   it "will allow saving when not validating" do
-    expect(instance.save(validate: false)).to be_true
+    expect(instance.save(validate: false)).to be_truthy
   end
 end

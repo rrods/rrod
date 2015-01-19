@@ -7,6 +7,7 @@ module Rrod
     include Serialization
 
     include Validations
+
     include Callbacks
     include Timestamps
 

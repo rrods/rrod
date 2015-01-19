@@ -84,7 +84,7 @@ describe Rrod::Model::Attribute do
   describe "casting" do
     it "will use the types rrod_cast method if available" do
       type = Class.new {
-        def self.rrod_cast(value)
+        def self.rrod_cast(value, instance)
           value.to_s.upcase
         end
       }
