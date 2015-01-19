@@ -48,9 +48,7 @@ module Rrod
       # @param [Symbol, String] the key of the attribute to write
       # @param the value to write to attributes
       def write_attribute(key, value)
-        @attributes[key.to_s] = self.class.cast_attribute(key, value).tap { |attr| 
-          attr._parent = self if attr.respond_to?(:_parent=) 
-        }
+        @attributes[key.to_s] = self.class.cast_attribute(key, value, self)
       end
       alias :[]= :write_attribute
 

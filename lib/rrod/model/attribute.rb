@@ -20,7 +20,7 @@ module Rrod
         self.model   = model
         self.name    = name.to_sym
         self.type    = type
-        self.default = options.delete(:default)
+        self.default = options.delete(:default) || nested_default
         self.options = options
         set_index if options.delete(:index)
       end
@@ -37,9 +37,9 @@ module Rrod
         self
       end
 
-      def cast(value)
+      def cast(value, instance)
         caster = type.respond_to?(:rrod_cast) ? type : rrod_caster
-        caster ? caster.rrod_cast(value) : value
+        caster ? caster.rrod_cast(value, instance) : value
       end
 
       private
@@ -55,6 +55,12 @@ module Rrod
 
       def nested_model?
         type.is_a?(Array) and type.first.ancestors.include?(Rrod::Model)
+      end
+
+      def nested_default
+        return unless nested_model?
+        model_class = type.model_class
+        -> { Rrod::Model::Collection.new(self, model_class) }
       end
 
       def define_reader

@@ -2,12 +2,12 @@ module Rrod
   class Caster
     module NestedModel
 
-      def rrod_cast(values)
+      def rrod_cast(values, model)
         return if values.nil?
-        Rrod::Model::Collection.new(model, values)
+        Rrod::Model::Collection.new(model, model_class, values)
       end
 
-      def model
+      def model_class
         first
       end
 

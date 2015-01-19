@@ -10,9 +10,9 @@ module Rrod
         attributes[name.to_sym] = Attribute.new(self, name, type, options).define
       end
 
-      def cast_attribute(key, value)
+      def cast_attribute(key, value, instance)
         attribute = attributes[key.to_sym]
-        attribute ? attribute.cast(value) : value
+        attribute ? attribute.cast(value, instance) : value
       end
 
       def nested_in(parent)
@@ -23,11 +23,19 @@ module Rrod
         attributes.any?
       end
 
-      def rrod_cast(value)
-        return       if value.nil?
-        return value if value.is_a?(Rrod::Model)
-        raise UncastableObjectError.new("#{value.inspect} cannot be rrod_cast") unless Hash === value
-        instantiate(nil, value)
+      def rrod_cast(value, parent=nil)
+        return if value.nil?
+
+        cast_model = case value
+        when Rrod::Model
+          value
+        when Hash
+          instantiate(nil, value)
+        else
+          raise UncastableObjectError.new("#{value.inspect} cannot be rrod_cast") unless Hash === value
+        end
+
+        cast_model.tap { |m| m._parent = parent }
       end
 
     end           
