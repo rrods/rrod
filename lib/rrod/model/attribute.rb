@@ -11,10 +11,7 @@ module Rrod
       end
 
       def self.presence_definition(name)
-        -> { 
-          value = read_attribute(name)
-          !value.nil? && !(value.respond_to?(:empty?) && value.empty?) 
-        }
+        -> { self[name].present? }
       end
        
       attr_accessor :model, :name, :type, :options, :default, :index
