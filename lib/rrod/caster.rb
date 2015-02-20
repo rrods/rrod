@@ -23,8 +23,8 @@ module Rrod
     Float      = new { |value| value.respond_to?(:gsub) ? value.gsub(',', '').to_f : value.to_f }
     Integer    = new { |value| value.respond_to?(:gsub) ? value.gsub(',', '').to_i : value.to_i }
     Numeric    = new { |value| 
-      float_value = value.to_f
-      int_value   = value.to_i
+      float_value = value.respond_to?(:gsub) ? value.gsub(',', '').to_f : value.to_f
+      int_value   = value.respond_to?(:gsub) ? value.gsub(',', '').to_i : value.to_i
       float_value == int_value ? int_value : float_value
     }
     String     = new { |value| value.to_s }
