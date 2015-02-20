@@ -74,12 +74,18 @@ describe Rrod::Caster do
     it "converts to floating point" do
       expect(caster.rrod_cast("3.142")).to eq floater
     end
+    it "suppresses commas in otherwise-clean input" do
+      expect(caster.rrod_cast('3,333.142')).to eq 3333.142
+    end
   end
 
   describe "Integer" do
     let(:type) { 'Integer' }
     it "converts to integer" do
       expect(caster.rrod_cast('4')).to eq 4
+    end
+    it "suppresses commas in otherwise-clean input" do
+      expect(caster.rrod_cast('1,234,567')).to eq 1234567 
     end
   end
 
@@ -90,6 +96,12 @@ describe Rrod::Caster do
     end
     it "converts to integer" do
       expect(caster.rrod_cast("3")).to eq 3
+    end
+    it "suppresses commas in integer input" do
+      expect(caster.rrod_cast("3,012")).to eq 3012
+    end
+    it "suppresses commas in float input" do
+      expect(caster.rrod_cast("3,333.142")).to eq 3333.142
     end
   end
 
