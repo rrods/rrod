@@ -29,15 +29,11 @@ module Rrod
         set_index if options.delete(:index)
       end
 
-      # @return [Object] default value or result of call on default value
-      def default(instance)
-        @default.respond_to?(:call) ? instance.instance_exec(&@default) : @default
-      end
-
       def define
         define_reader
         define_writer
         define_presence
+        define_default
         apply_validators
         self
       end
@@ -79,7 +75,13 @@ module Rrod
       def define_presence
         model.send :define_method, "#{name}?", self.class.presence_definition(name)
       end
-      
+
+      def define_default
+        value  = default unless default.respond_to?(:call)
+        method = default.respond_to?(:call) ? default : -> {value} 
+        model.send :define_method, "#{name}_default", method
+      end
+
       def set_index
         @index = Index.new(self)
       end

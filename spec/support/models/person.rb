@@ -40,11 +40,18 @@ class Person
   attribute :age,     Integer, numericality: {min: 10}
   attribute :gender,  Symbol
 
+  attribute :likes_pets, Boolean, default: true
+  attribute :comments,   Array,   default: -> { [build_comment] }
+
   attribute :address, Address
 
   attribute :pets,    [Pet]
 
   validates_length_of :pets, minimum: 1
+
+  def build_comment
+    {name: 'Adam', text: 'What kind of comment is this really?'}
+  end
 
   private
 

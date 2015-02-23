@@ -29,36 +29,6 @@ describe Rrod::Model::Attribute do
     expect(attribute.options).to eq(options)
   end
 
-  describe "defaults" do
-    let(:default) { attribute.default(instance) }
-  
-    context "when a value" do
-      let(:options) { {default: 'SOO fluffy!'} }
-
-      it "can provide a default value" do
-        expect(default).to eq 'SOO fluffy!'
-      end
-    end
-
-    context "when a proc" do
-      let(:options) { {default: -> { 'alligator' }} }
-
-      it "can provide a default value if a proc" do
-        expect(default).to eq 'alligator'
-      end
-
-      context "given an instance" do
-        let(:model)   { Class.new { include Rrod::Model; attr_accessor :foo } }
-        let(:options) { {default: -> { foo.upcase }} }
-
-        it "evaluates in the context of the given instance" do
-          instance.foo = 'whoah'
-          expect(default).to eq('WHOAH')
-        end
-      end
-    end
-  end
-
   describe "defining attribute methods" do
     before(:each) { attribute.define }
 
@@ -77,6 +47,12 @@ describe Rrod::Model::Attribute do
     describe "presence" do
       it "checks for presence" do
         expect(instance).to respond_to("#{name}?")
+      end
+    end
+
+    describe "default" do
+      it "adds the default" do
+        expect(instance).to respond_to("#{name}_default")
       end
     end
   end

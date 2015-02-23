@@ -14,6 +14,26 @@ describe Rrod::Model::Schema do
     expect(instance).to respond_to(:name=)
   end
 
+  it "defines a default for the attribute if provided as a scalar" do
+    expect(instance.likes_pets_default).to be true
+  end
+
+  it "defines a default for the attribute if provided as a proc" do
+    expect(instance.comments).to eq([instance.build_comment])
+  end
+
+  context "subclassing" do
+    let(:model) { Class.new(Person) }
+
+    it "provides defaults" do
+      expect(instance.likes_pets_default).to be true
+    end
+
+    it "provides defaults to readers" do
+      expect(instance.likes_pets).to be true
+    end
+  end
+
   it "will properly typecast when writing an attribute" do
     instance.gender = 'female'
     expect(instance.gender).to be :female
