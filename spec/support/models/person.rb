@@ -1,5 +1,6 @@
 class Address
   include Rrod::Model
+  nested_in :resident
 
   attribute :street,     String
   attribute :city,       String

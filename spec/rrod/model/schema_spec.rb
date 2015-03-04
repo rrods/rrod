@@ -32,6 +32,16 @@ describe Rrod::Model::Schema do
     it "provides defaults to readers" do
       expect(instance.likes_pets).to be true
     end
+
+    it "has a schema if its parent does" do
+      expect(model.schema?).to be true
+    end
+
+    it "nests inside its parent properly" do
+      pet = Pet.new(name: 'Molle')
+      instance.pets = [pet]
+      expect(instance.pets.first.owner).to be_a(Person)
+    end
   end
 
   it "will properly typecast when writing an attribute" do
@@ -40,7 +50,7 @@ describe Rrod::Model::Schema do
   end
 
   it "is using a schema if an attribute is declared" do
-    expect(Person.schema?).to be_truthy
+    expect(Person.schema?).to be true
   end
 
   describe "associations", integration: true do

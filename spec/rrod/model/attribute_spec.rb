@@ -55,6 +55,16 @@ describe Rrod::Model::Attribute do
         expect(instance).to respond_to("#{name}_default")
       end
     end
+
+    describe "attribute definitions" do
+      it "adds the attribute definition to to model class" do
+        expect(model).to respond_to("rrod_attribute_#{name}")
+      end
+
+      it "allows access to the attribute from the class" do
+        expect(model.send("rrod_attribute_#{name}")).to eq attribute
+      end
+    end
   end
 
   describe "casting" do

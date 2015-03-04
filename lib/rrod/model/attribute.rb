@@ -30,6 +30,7 @@ module Rrod
       end
 
       def define
+        define_attribute
         define_reader
         define_writer
         define_presence
@@ -62,6 +63,12 @@ module Rrod
         return unless nested_model?
         model_class = type.model_class
         -> { Rrod::Model::Collection.new(self, model_class) }
+      end
+
+      def define_attribute
+        _self = self # i am a shadow of self
+        model.define_singleton_method(
+          "#{Rrod::Model::Schema::RROD_ATTRIBUTE_PREFIX}#{name}") { _self }
       end
 
       def define_reader
