@@ -94,15 +94,20 @@ describe Rrod::Model do
 
   describe "dirty tracking" do
     let(:model)    { Class.new(Car) { attribute :wheels, Integer, default: 4 } }
-    let(:instance) { model.new }
+    let(:instance) { model.new(make: 'Jeep') }
 
     it "will track if an attribute is changing" do
       instance.wheels = 5
       expect(instance.wheels_changed?).to be true
     end
 
-    it "will not track if an attribute is not changing" do
-      instance.wheels = 4
+    it "will not track if an attribute is set from a default" do
+      expect(instance.wheels).to eq 4
+      expect(instance.wheels_changed?).to be false
+    end
+
+    it "will not track if an attribute has not changed" do
+      instance.make = 'Jeep'
       expect(instance.wheels_changed?).to be false
     end
   end

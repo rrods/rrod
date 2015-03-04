@@ -10,8 +10,9 @@ end
 
 class Vaccination
   include Rrod::Model
+  nested_in :pet
 
-  attribute :type, String
+  attribute :type, String, default: -> { 'Temper' unless pet.friendly? }
   attribute :when, Date
 end
 

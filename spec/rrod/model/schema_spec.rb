@@ -19,7 +19,7 @@ describe Rrod::Model::Schema do
   end
 
   it "defines a default for the attribute if provided as a proc" do
-    expect(instance.comments).to eq([instance.build_comment])
+    expect(instance.comments).to eq([instance.build_comment.stringify_keys])
   end
 
   context "subclassing" do

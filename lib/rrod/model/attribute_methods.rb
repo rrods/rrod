@@ -11,7 +11,7 @@ module Rrod
       end
 
       def initialize(attributes = {})
-        @attributes        = {}
+        @attributes        = {}.with_indifferent_access
         self.magic_methods = attributes.keys
         self.attributes    = attributes
         changes_applied
@@ -30,7 +30,6 @@ module Rrod
       # @return [Hash] the object's attributes
       def attributes
         self.class.attributes.keys.inject({}) { |acc, key|
-        # @attributes.keys.inject({}) { |acc, key|
           acc.tap { |hash| 
             next hash unless self.class.attributes.keys.include?(key.to_s)
             hash[key] = public_send(key)
@@ -50,7 +49,7 @@ module Rrod
       # @param [Symbol, String] the key of the attribute to read
       # @return the attribute at the given key
       def read_attribute(key)
-        @attributes[key.to_s] || read_default(key)
+        @attributes[key] || read_default(key)
       end
       alias :[] :read_attribute
 
@@ -58,18 +57,23 @@ module Rrod
       # @param [Symbol, String] the key of the attribute to write
       # @param the value to write to attributes
       def write_attribute(key, value)
-        public_send("#{key}_will_change!") unless read_attribute(key) == value
-        cast_attribute(key, value)
+        send("#{key}_will_change!") if changing_attribute?(key, value)
+        @attributes[key] = cast_attribute(key, value)
       end
       alias :[]= :write_attribute
 
       def cast_attribute(key, value)
-        @attributes[key.to_s] = self.class.cast_attribute(key, value, self)
+        self.class.cast_attribute(key, value, self)
+      end
+
+      def changing_attribute?(key, value)
+        @attributes[key] != cast_attribute(key, value)
       end
 
       def read_default(key)
         method = "#{key}_default"
-        cast_attribute(key, public_send(method)) if respond_to?(method)
+        return unless respond_to?(method)
+        @attributes[key] = cast_attribute(key, send(method))
       end
 
       def nested_model?
