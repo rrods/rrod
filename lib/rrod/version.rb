@@ -1,2 +1,2 @@
 Rrod = Module.new unless defined? Rrod
-Rrod::VERSION = '1.0.0.alpha.7'
+Rrod::VERSION = '1.0.0.alpha.8'
