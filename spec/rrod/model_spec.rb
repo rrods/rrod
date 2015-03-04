@@ -25,6 +25,10 @@ describe Rrod::Model do
       it "names the bucket based off the class" do
         expect(model.bucket.name).to eq 'cars'
       end
+
+      it "uses anonymous for the bucket name on unnamed classes" do
+        expect(Class.new { include Rrod::Model }.bucket.name).to eq Rrod::Model::Schema::ANONYMOUS
+      end
     end
 
     describe "instance methods" do
@@ -44,6 +48,13 @@ describe Rrod::Model do
 
       it "has a bucket" do
         expect(instance.bucket).to be_a Riak::Bucket
+      end
+
+      it "is inspectable" do
+        inspectable = BatMobile.new(wheels: 7, weapons: [{type: 'Gattling Gun', damage: 4_321}])
+        # used for human debugging of inspection output
+        # expect(inspectable.inspect).to eq("fancy string")
+        expect(inspectable.inspect).to be_a String
       end
     end
   end

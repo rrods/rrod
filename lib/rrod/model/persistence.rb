@@ -15,7 +15,7 @@ module Rrod
       alias :new_record? :new?
 
       def save
-        persist
+        persist.tap { changes_applied }
       end
 
       def update(attributes)
@@ -26,8 +26,7 @@ module Rrod
  
       def persist
         bucket.enable_index!
-        robject.raw_data = to_json
-        robject.key = id unless id.nil?
+        robject.raw_data = to_json(except: :id)
         robject.store
         self.id = robject.key
         @persisted = true

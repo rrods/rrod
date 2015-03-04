@@ -16,18 +16,29 @@ describe Rrod::Model::Finders, integration: true do
     expect(found).to be_a model
   end
 
+  it "will have the id of the key it is found with" do
+    found = model.find(instance.id)
+    expect(found.id).to eq instance.id
+  end
+
   it "will raise an error if it can't be found" do
     expect { model.find("id that is not there") }.to raise_error(Rrod::Model::NotFound)
   end
 
-  it "is persisted" do
-    found = model.find(instance.id)
-    expect(found).to be_persisted
-  end
+  describe "when finding" do
+    let(:found) { model.find(instance.id) }
 
-  it "sets the robject on the found instance" do
-    found = model.find(instance.id)
-    expect(found.robject).to be_a Riak::RObject
+    it "is persisted" do
+      expect(found).to be_persisted
+    end
+
+    it "is not changed" do
+      expect(found).not_to be_changed
+    end
+
+    it "sets the robject on the found instance" do
+      expect(found.robject).to be_a Riak::RObject
+    end
   end
 
   describe "finding by attributes in the hash" do

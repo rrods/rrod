@@ -3,12 +3,13 @@ module Rrod
     module Schema
 
       RROD_ATTRIBUTE_PREFIX = "rrod_attribute_".freeze
+      ANONYMOUS             = "anonymous".freeze
 
       def attributes
         @attributes ||= public_methods.map(&:to_s).reduce({}) { |acc, method|
           next acc unless method.starts_with?(RROD_ATTRIBUTE_PREFIX)
           key = method[RROD_ATTRIBUTE_PREFIX.length..-1]
-          acc.tap { |hash| hash[key] = send(method) }
+          acc.tap { |hash| hash[key] = public_send(method) }
         }.with_indifferent_access
       end
      
@@ -18,8 +19,12 @@ module Rrod
       end
 
       def cast_attribute(key, value, instance)
-        attribute = attributes[key]
-        attribute ? attribute.cast(value, instance) : value
+        method = "#{RROD_ATTRIBUTE_PREFIX}#{key}"
+        if respond_to?(method)
+          public_send(method).cast(value, instance)
+        else
+          value
+        end
       end
 
       def nested_in(parent)
@@ -42,7 +47,7 @@ module Rrod
         when Rrod::Model
           value
         when Hash
-          instantiate(nil, value)
+          new(value)
         else
           raise UncastableObjectError.new("#{value.inspect} cannot be rrod_cast") unless Hash === value
         end

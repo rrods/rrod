@@ -2,29 +2,40 @@ module Rrod
   module Model
     module AttributeMethods
       extend ActiveSupport::Concern
+      include ActiveModel::Dirty
 
       attr_accessor :_parent
+
+      included do
+        define_attribute_method :id
+      end
 
       def initialize(attributes = {})
         @attributes        = {}
         self.magic_methods = attributes.keys
         self.attributes    = attributes
+        changes_applied
       end
 
       def id
-        read_attribute :id
+        robject.key
       end
 
       def id=(value)
-        write_attribute :id, value
+        id_will_change! unless id == value
+        robject.key = value
       end
 
       # Returns a new hash with all of the object's attributes.
       # @return [Hash] the object's attributes
       def attributes
-        @attributes.keys.inject({}) { |acc, key|
-          acc.tap { |hash| hash[key] = respond_to?(key) ? public_send(key) : nil }
-        }
+        self.class.attributes.keys.inject({}) { |acc, key|
+        # @attributes.keys.inject({}) { |acc, key|
+          acc.tap { |hash| 
+            next hash unless self.class.attributes.keys.include?(key.to_s)
+            hash[key] = public_send(key)
+          }
+        }.tap { |hash| hash['id'] = id unless nested_model? }
       end
 
       # Mass assign the attributes of the object.
@@ -39,7 +50,7 @@ module Rrod
       # @param [Symbol, String] the key of the attribute to read
       # @return the attribute at the given key
       def read_attribute(key)
-        @attributes[key.to_s] || write_attribute(key, read_default(key))
+        @attributes[key.to_s] || read_default(key)
       end
       alias :[] :read_attribute
 
@@ -47,13 +58,22 @@ module Rrod
       # @param [Symbol, String] the key of the attribute to write
       # @param the value to write to attributes
       def write_attribute(key, value)
-        @attributes[key.to_s] = self.class.cast_attribute(key, value, self)
+        public_send("#{key}_will_change!") unless read_attribute(key) == value
+        cast_attribute(key, value)
       end
       alias :[]= :write_attribute
 
+      def cast_attribute(key, value)
+        @attributes[key.to_s] = self.class.cast_attribute(key, value, self)
+      end
+
       def read_default(key)
         method = "#{key}_default"
-        send(method) if respond_to?(method)
+        cast_attribute(key, public_send(method)) if respond_to?(method)
+      end
+
+      def nested_model?
+        _parent.present?
       end
 
       private

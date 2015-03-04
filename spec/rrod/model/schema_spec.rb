@@ -75,13 +75,18 @@ describe Rrod::Model::Schema do
 
     it "will properly serialize nested models" do
       instance.address = Address.new(street: '123 Fancy Pants Lane')
-      instance.pets    = [Pet.new(name: 'Molle')]
+      instance.pets    = [Pet.new(name: 'Molle', friendly: true)]
       instance.name    = 'Zoolander'
       hash             = instance.serializable_hash
 
       expect(hash).to be_a Hash
-      expect(hash['pets']).to    eq [{'name' => 'Molle'}]
-      expect(hash['address']).to eq 'street' => '123 Fancy Pants Lane'
+      expect(hash['pets']).to    eq [{'name' => 'Molle',
+        'species' => nil, 'friendly' => true, 'vaccinations' => [
+          'type' => 'rabies', 'when' => Date.today
+        ]
+      }]
+      expect(hash['address']).to eq 'street' => '123 Fancy Pants Lane',
+        'city' => nil, 'state_abbr' => nil, 'zip' => nil
     end
 
     it "will set the parent on a nested model when assigned" do
@@ -108,8 +113,9 @@ describe Rrod::Model::Schema do
     expect { Pet.rrod_cast(Object.new) }.to raise_error(Rrod::Model::UncastableObjectError)
   end
 
-  it "will not add ids to models instantiated via `rrod_cast`" do
-    expect(Pet.rrod_cast(name: 'Molle').attributes).to_not have_key('id')
+  it "will not add ids to models that are nested" do
+    instance.pets = [Pet.new(name: 'Molle')]
+    expect(instance.pets.first.attributes).not_to have_key('id')
   end
 
 end

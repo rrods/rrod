@@ -59,8 +59,10 @@ module Rrod
         }
       end
 
+      # when searching documents do not come back with robjects,
+      # we must set the key manually on it via `id=`
       def instantiate(key, data)
-        new(data).tap { |instance| instance.id = key if key }
+        new data.merge(id: key)
       end
 
     end

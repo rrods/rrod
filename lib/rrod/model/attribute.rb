@@ -30,6 +30,7 @@ module Rrod
       end
 
       def define
+        define_attribute_method
         define_attribute
         define_reader
         define_writer
@@ -63,6 +64,10 @@ module Rrod
         return unless nested_model?
         model_class = type.model_class
         -> { Rrod::Model::Collection.new(self, model_class) }
+      end
+
+      def define_attribute_method
+        model.define_attribute_method name
       end
 
       def define_attribute

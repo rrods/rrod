@@ -24,7 +24,7 @@ class Pet
   attribute :friendly, Boolean
 
   attribute :vaccinations, [Vaccination], default: -> { 
-    Vaccination.new(type: :rabies, when: Date.today)
+    [Vaccination.new(type: :rabies, when: Date.today)]
   }
 end
 

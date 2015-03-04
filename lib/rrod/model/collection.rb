@@ -20,7 +20,8 @@ module Rrod
       end
 
       def collection=(collection)
-        raise InvalidCollectionTypeError.new unless collection.respond_to?(:each)
+        message = "#{collection.inspect} does not respond to :each"
+        raise InvalidCollectionTypeError.new(message) unless collection.respond_to?(:each)
         collection.map { |member| push member }
       rescue InvalidMemberTypeError => e
         clear and raise e
@@ -47,6 +48,10 @@ module Rrod
       
       def valid?
         collection.all?(&:valid?)
+      end
+
+      def inspect
+        %Q[[#{map(&:inspect).join(', ')}]]
       end
 
       InvalidCollectionTypeError = Class.new(StandardError)

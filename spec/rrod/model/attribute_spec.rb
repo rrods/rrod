@@ -65,6 +65,13 @@ describe Rrod::Model::Attribute do
         expect(model.send("rrod_attribute_#{name}")).to eq attribute
       end
     end
+
+    describe "attribute methods" do
+      it "declares the attribute an ActiveModel attribute method" do
+        expect(model).to receive(:define_attribute_method).with(name)
+        attribute.define
+      end
+    end
   end
 
   describe "casting" do

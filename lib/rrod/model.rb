@@ -23,9 +23,8 @@ module Rrod
         @bucket ||= client[bucket_name]
       end
 
-      # TODO make class attribute
       def bucket_name
-        name.tableize
+        (name.presence || Rrod::Model::Schema::ANONYMOUS).tableize
       end
     end
 
@@ -35,6 +34,19 @@ module Rrod
 
     def bucket
       self.class.bucket
+    end
+
+    def inspect
+      %Q[#<#{inspect_name} attributes: #{inspect_attributes} object_id: #{object_id}>]
+    end
+
+    def inspect_name
+      storage_name = nested_model? ?  "(nested)" : "[#{bucket.name}]"
+      "#{self.class.name || self.class.to_s}#{storage_name}"
+    end
+
+    def inspect_attributes
+      %Q[{#{attributes.map { |k, v| "#{k}: #{v.inspect}" }.join(', ')}}]
     end
   end
 end

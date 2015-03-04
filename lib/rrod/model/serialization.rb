@@ -13,7 +13,7 @@ module Rrod
       end
      
       def to_json(options={})
-        MultiJson.dump serializable_hash(options) 
+        MultiJson.dump as_json(options)
       end
 
     end

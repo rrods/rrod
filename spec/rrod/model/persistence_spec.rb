@@ -38,6 +38,14 @@ describe Rrod::Model::Persistence, integration: true do
       it "has an id" do
         expect(instance.id).not_to be_nil
       end
+
+      it "does not store the id in the model json" do
+        expect(instance.robject.data).not_to have_key('id')
+      end
+
+      it "does not have changes" do
+        expect(instance).not_to be_changed
+      end
     end
 
     describe "update models" do
