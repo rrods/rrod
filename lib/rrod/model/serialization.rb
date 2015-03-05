@@ -15,7 +15,7 @@ module Rrod
       def to_json(options={})
         MultiJson.dump as_json(options)
       end
-
+      
     end
   end
 end

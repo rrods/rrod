@@ -43,16 +43,14 @@ module Rrod
       def rrod_cast(value, parent=nil)
         return if value.nil?
 
-        cast_model = case value
+        case value
         when Rrod::Model
-          value
+          value.tap { |m| m._parent = parent }
         when Hash
-          new(value)
+          new value.merge(_parent: parent)
         else
           raise UncastableObjectError.new("#{value.inspect} cannot be rrod_cast") unless Hash === value
         end
-
-        cast_model.tap { |m| m._parent = parent }
       end
 
     end           

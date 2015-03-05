@@ -118,4 +118,9 @@ describe Rrod::Model::Schema do
     expect(instance.pets.first.attributes).not_to have_key('id')
   end
 
+  it "will properly nest grandparents" do
+    instance.pets = [pet = Pet.new]
+    expect(instance.pets.first.vaccinations.first.pet).to eq pet
+  end
+
 end

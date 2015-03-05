@@ -20,7 +20,7 @@ module Rrod
       end
 
       def collection=(collection)
-        message = "#{collection.inspect} does not respond to :each"
+        message = "Object type #{collection.class} does not respond to :each"
         raise InvalidCollectionTypeError.new(message) unless collection.respond_to?(:each)
         collection.map { |member| push member }
       rescue InvalidMemberTypeError => e

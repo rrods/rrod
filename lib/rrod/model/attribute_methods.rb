@@ -12,8 +12,9 @@ module Rrod
 
       def initialize(attributes = {})
         @attributes        = {}.with_indifferent_access
+        self._parent       = attributes.delete(:_parent)
         self.magic_methods = attributes.keys
-        self.attributes    = attributes
+        self._attributes   = attributes
         changes_applied
       end
 
@@ -22,8 +23,7 @@ module Rrod
       end
 
       def id=(value)
-        id_will_change! unless id == value
-        robject.key = value
+        write_attribute(:id, robject.key = value)
       end
 
       # Returns a new hash with all of the object's attributes.
@@ -40,9 +40,7 @@ module Rrod
       # Mass assign the attributes of the object.
       # @param [Hash] the attributes to mass assign
       def attributes=(attrs)
-        attrs.each do |key, value|
-          public_send "#{key}=", value
-        end
+        self._attributes = attrs
       end
 
       # Read a single attribute of the object.
@@ -111,6 +109,12 @@ module Rrod
         magic_methods.include? args.first.to_s
       end
 
+      # to be run without the callback
+      def _attributes=(attrs)
+        attrs.each do |key, value|
+          public_send "#{key}=", value
+        end
+      end
     end
   end
 end
